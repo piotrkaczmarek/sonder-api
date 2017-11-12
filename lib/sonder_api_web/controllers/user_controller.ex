@@ -3,6 +3,7 @@ defmodule SonderApiWeb.UserController do
 
   alias SonderApi.Accounts
   alias SonderApi.Accounts.User
+  alias SonderApi.Accounts.FacebookClient
 
   action_fallback SonderApiWeb.FallbackController
 
@@ -37,6 +38,14 @@ defmodule SonderApiWeb.UserController do
     user = Accounts.get_user!(id)
     with {:ok, %User{}} <- Accounts.delete_user(user) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  def authenticate(conn, %{"access_token" => access_token}) do
+    with {:ok, data} <- FacebookClient.fetch_user_data(access_token),
+         {:ok, user} <- Accounts.get_or_create_from_facebook(data)
+    do
+      render(conn, "show.json", user: user)
     end
   end
 end

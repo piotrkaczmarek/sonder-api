@@ -20,7 +20,9 @@ defmodule SonderApiWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", SonderApiWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", SonderApiWeb do
+    pipe_through :api
+
+    post "/authenticate", UserController, :authenticate
+  end
 end
