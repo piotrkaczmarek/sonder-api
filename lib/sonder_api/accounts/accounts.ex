@@ -38,19 +38,16 @@ defmodule SonderApi.Accounts do
   def get_user!(id), do: Repo.get!(User, id)
 
 
-  def get_or_create_from_facebook(attrs) do
-    Repo.one(from u in User, where: u.facebook_id == ^attrs[:facebook_id])
-    |> SonderApi.Accounts.get_or_create(attrs)
-  end
 
-  def get_or_create(nil, attrs) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
-  end
+  @doc """
+  Gets a single user by facebook_id if none is found it creates one
 
-  def get_or_create(user, _) do
-    { :ok, user}
+  """
+  def get_or_create_user(attrs) do
+    case Repo.one(from u in User, where: u.facebook_id == ^attrs[:facebook_id]) do
+      %User{} = user -> { :ok, user }
+      nil -> create_user(attrs)
+    end
   end
 
   @doc """

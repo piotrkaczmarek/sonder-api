@@ -67,5 +67,18 @@ defmodule SonderApi.AccountsTest do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
+
+    test "get_or_create_user/1 returns existing user" do
+      user = user_fixture()
+      assert {:ok, user} == Accounts.get_or_create_user(@valid_attrs)
+    end
+
+    test "get_or_create_user/1 creates missing user" do
+      assert {:ok, %User{} = user} = Accounts.get_or_create_user(@valid_attrs)
+      assert user.email == "some email"
+      assert user.facebook_access_token == "some facebook_access_token"
+      assert user.facebook_id == "some facebook_id"
+      assert user.first_name == "some first_name"
+    end
   end
 end
