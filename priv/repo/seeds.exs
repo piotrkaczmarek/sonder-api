@@ -9,3 +9,6 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 3})
+SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 5})

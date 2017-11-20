@@ -13,6 +13,24 @@ defmodule SonderApiWeb.Router do
     plug :accepts, ["json"]
   end
 
+  defp authenticate_user(conn, _) do
+    with [token] <- get_req_header(conn, "accesstoken"),
+         user <- SonderApi.Accounts.get_user_by_token(token)
+    do
+      assign(conn, :current_user, user)
+    else
+      _ -> handle_unauthorized(conn)
+    end
+  end
+
+  defp handle_unauthorized(conn) do
+    conn
+    |> put_status(:unauthorized)
+    |> halt()
+    |> put_view(SonderApiWeb.ErrorView)
+    |> render("401.json", %{})
+  end
+
   scope "/", SonderApiWeb do
     pipe_through :browser # Use the default browser stack
 
@@ -24,5 +42,11 @@ defmodule SonderApiWeb.Router do
     pipe_through :api
 
     post "/authenticate", UserController, :authenticate
+  end
+
+  scope "/api", SonderApiWeb do
+    pipe_through [:api, :authenticate_user]
+
+    resources "/parties", PartyController, only: [:index]
   end
 end
