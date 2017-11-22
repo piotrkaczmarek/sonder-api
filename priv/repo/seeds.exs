@@ -10,5 +10,15 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 3})
-SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 5})
+
+
+user_1 = SonderApi.Repo.insert!(%SonderApi.Accounts.User{first_name: "Bob", facebook_id: "12345", facebook_access_token: "abcd"})
+user_2 = SonderApi.Repo.insert!(%SonderApi.Accounts.User{first_name: "Susan", facebook_id: "23456", facebook_access_token: "bcde"})
+
+
+party_1 = SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 3})
+party_2 = SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 5})
+
+SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_1.id, party_id: party_1.id})
+SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_2.id, party_id: party_1.id})
+SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_1.id, party_id: party_2.id})

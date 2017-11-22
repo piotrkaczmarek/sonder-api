@@ -12,6 +12,15 @@ defmodule SonderApiWeb.UserView do
 
   def render("user.json", %{user: user}) do
     %{id: user.id,
+      first_name: user.first_name}
+  end
+
+  def render("show_private.json", %{user: user}) do
+    %{data: render_one(user, UserView, "user_private.json")}
+  end
+
+  def render("user_private.json", %{user: user}) do
+    %{id: user.id,
       first_name: user.first_name,
       email: user.email,
       facebook_id: user.facebook_id,

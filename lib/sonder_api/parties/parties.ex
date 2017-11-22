@@ -19,6 +19,7 @@ defmodule SonderApi.Parties do
   """
   def list_parties do
     Repo.all(Party)
+    |> Repo.preload(:users)
   end
 
   @doc """
@@ -100,5 +101,101 @@ defmodule SonderApi.Parties do
   """
   def change_party(%Party{} = party) do
     Party.changeset(party, %{})
+  end
+
+  alias SonderApi.Parties.UserParty
+
+  @doc """
+  Returns the list of user_parties.
+
+  ## Examples
+
+      iex> list_user_parties()
+      [%UserParty{}, ...]
+
+  """
+  def list_user_parties do
+    Repo.all(UserParty)
+  end
+
+  @doc """
+  Gets a single user_party.
+
+  Raises `Ecto.NoResultsError` if the User party does not exist.
+
+  ## Examples
+
+      iex> get_user_party!(123)
+      %UserParty{}
+
+      iex> get_user_party!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_party!(id), do: Repo.get!(UserParty, id)
+
+  @doc """
+  Creates a user_party.
+
+  ## Examples
+
+      iex> create_user_party(%{field: value})
+      {:ok, %UserParty{}}
+
+      iex> create_user_party(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_user_party(attrs \\ %{}) do
+    %UserParty{}
+    |> UserParty.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user_party.
+
+  ## Examples
+
+      iex> update_user_party(user_party, %{field: new_value})
+      {:ok, %UserParty{}}
+
+      iex> update_user_party(user_party, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_party(%UserParty{} = user_party, attrs) do
+    user_party
+    |> UserParty.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a UserParty.
+
+  ## Examples
+
+      iex> delete_user_party(user_party)
+      {:ok, %UserParty{}}
+
+      iex> delete_user_party(user_party)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user_party(%UserParty{} = user_party) do
+    Repo.delete(user_party)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user_party changes.
+
+  ## Examples
+
+      iex> change_user_party(user_party)
+      %Ecto.Changeset{source: %UserParty{}}
+
+  """
+  def change_user_party(%UserParty{} = user_party) do
+    UserParty.changeset(user_party, %{})
   end
 end

@@ -28,13 +28,30 @@ defmodule SonderApiWeb.PartyControllerTest do
       assert json_response(conn, 200)["data"] == []
     end
 
-    test "returns all parties", %{conn: conn} do
-      { :ok, [{ _, party_1}] } = create_party()
-      { :ok, [{ _, party_2}] } = create_party()
+    test "returns all parties with users", %{conn: conn} do
+      party_1 = create_party()
+      party_2 = create_party()
+      user_1 = create_user(%{email: "email1@example.com", facebook_access_token: "abc", facebook_id: "123", first_name: "Bob"})
+      user_2 = create_user(%{email: "email2@example.com", facebook_access_token: "bcd", facebook_id: "234", first_name: "Susan"})
+
+      create_user_party(%{user_id: user_1.id, party_id: party_1.id})
+      create_user_party(%{user_id: user_1.id, party_id: party_2.id})
+      create_user_party(%{user_id: user_2.id, party_id: party_1.id})
+
       conn = get conn, party_path(conn, :index)
-      serialized_parties = [party_1, party_2]
-      |> Enum.map fn(party) -> %{"id" => party.id, "size" => party.size} end
-      assert json_response(conn, 200)["data"] == serialized_parties
+      # serialized_parties = [party_1, party_2]
+      # |> Enum.map fn(party) -> %{"id" => party.id, "size" => party.size, "users" => Enum.map(party.users, fn(user) -> %{"id" => user.id, "first_name" => user.first_name} end)} end
+
+      expected_response = [
+        %{"id" => party_1.id,
+          "size" => party_1.size,
+          "users" => [%{"id" => user_1.id, "first_name" => user_1.first_name}, %{"id" => user_2.id, "first_name" => user_2.first_name}]},
+        %{"id" => party_2.id,
+          "size" => party_2.size,
+          "users" => [%{"id" => user_1.id, "first_name" => user_1.first_name}]}
+      ]
+
+      assert json_response(conn, 200)["data"] == expected_response
     end
   end
 
@@ -94,9 +111,30 @@ defmodule SonderApiWeb.PartyControllerTest do
   #   end
   # end
 
-  defp create_party() do
-    party = fixture(:party)
-    { :ok, party: party }
+  def create_party(attrs \\ %{}) do
+    {:ok, party} =
+      attrs
+      |> Enum.into(%{size: 4})
+      |> Parties.create_party()
+
+    party
+  end
+
+  defp create_user(attrs \\ %{}) do
+    {:ok, user} =
+      attrs
+      |> Enum.into(%{email: "email@example.com", facebook_access_token: "some facebook_access_token", facebook_id: "some facebook_id", first_name: "some first_name"})
+      |> SonderApi.Accounts.create_user()
+
+    user
+  end
+
+  defp create_user_party(attrs \\ %{}) do
+    {:ok, user_party} =
+      attrs
+      |> Parties.create_user_party()
+
+    user_party
   end
 
   defp create_user_and_authorize(conn) do
