@@ -34,21 +34,19 @@ defmodule SonderApiWeb.PartyControllerTest do
       user_1 = create_user(%{email: "email1@example.com", facebook_access_token: "abc", facebook_id: "123", first_name: "Bob"})
       user_2 = create_user(%{email: "email2@example.com", facebook_access_token: "bcd", facebook_id: "234", first_name: "Susan"})
 
-      create_user_party(%{user_id: user_1.id, party_id: party_1.id})
-      create_user_party(%{user_id: user_1.id, party_id: party_2.id})
-      create_user_party(%{user_id: user_2.id, party_id: party_1.id})
+      create_user_party(%{user_id: user_1.id, party_id: party_1.id, state: "accepted"})
+      create_user_party(%{user_id: user_1.id, party_id: party_2.id, state: "accepted"})
+      create_user_party(%{user_id: user_2.id, party_id: party_1.id, state: "accepted"})
 
       conn = get conn, party_path(conn, :index)
-      # serialized_parties = [party_1, party_2]
-      # |> Enum.map fn(party) -> %{"id" => party.id, "size" => party.size, "users" => Enum.map(party.users, fn(user) -> %{"id" => user.id, "first_name" => user.first_name} end)} end
 
       expected_response = [
         %{"id" => party_1.id,
           "size" => party_1.size,
-          "users" => [%{"id" => user_1.id, "first_name" => user_1.first_name}, %{"id" => user_2.id, "first_name" => user_2.first_name}]},
+          "members" => [%{"id" => user_1.id, "first_name" => user_1.first_name}, %{"id" => user_2.id, "first_name" => user_2.first_name}]},
         %{"id" => party_2.id,
           "size" => party_2.size,
-          "users" => [%{"id" => user_1.id, "first_name" => user_1.first_name}]}
+          "members" => [%{"id" => user_1.id, "first_name" => user_1.first_name}]}
       ]
 
       assert json_response(conn, 200)["data"] == expected_response

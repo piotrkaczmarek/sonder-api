@@ -64,21 +64,21 @@ defmodule SonderApi.PartiesTest do
     test "list_user_parties/0 returns all user_parties" do
       user = create_user()
       party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id})
+      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
       assert Parties.list_user_parties() == [user_party]
     end
 
     test "get_user_party!/1 returns the user_party with given id" do
       user = create_user()
       party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id})
+      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
       assert Parties.get_user_party!(user_party.id) == user_party
     end
 
     test "create_user_party/1 with valid data creates a user_party" do
       user = create_user()
       party = create_party()
-      assert {:ok, %UserParty{} = user_party} = Parties.create_user_party(%{user_id: user.id, party_id: party.id})
+      assert {:ok, %UserParty{} = user_party} = Parties.create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
     end
 
     test "create_user_party/1 with invalid data returns error changeset" do
@@ -88,7 +88,7 @@ defmodule SonderApi.PartiesTest do
     test "update_user_party/2 with valid data updates the user_party" do
       user = create_user()
       party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id})
+      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
       assert {:ok, user_party} = Parties.update_user_party(user_party, @update_attrs)
       assert %UserParty{} = user_party
     end
@@ -96,7 +96,7 @@ defmodule SonderApi.PartiesTest do
     test "update_user_party/2 with invalid data returns error changeset" do
       user = create_user()
       party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id})
+      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
       assert {:error, %Ecto.Changeset{}} = Parties.update_user_party(user_party, @invalid_attrs)
       assert user_party == Parties.get_user_party!(user_party.id)
     end
@@ -104,7 +104,7 @@ defmodule SonderApi.PartiesTest do
     test "delete_user_party/1 deletes the user_party" do
       user = create_user()
       party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id})
+      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
       assert {:ok, %UserParty{}} = Parties.delete_user_party(user_party)
       assert_raise Ecto.NoResultsError, fn -> Parties.get_user_party!(user_party.id) end
     end
@@ -112,7 +112,7 @@ defmodule SonderApi.PartiesTest do
     test "change_user_party/1 returns a user_party changeset" do
       user = create_user()
       party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id})
+      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
       assert %Ecto.Changeset{} = Parties.change_user_party(user_party)
     end
   end

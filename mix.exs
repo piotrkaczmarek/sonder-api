@@ -42,7 +42,8 @@ defmodule SonderApi.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:tesla, "~> 0.9.0"},
-      {:poison, ">= 1.0.0"}
+      {:poison, ">= 1.0.0"},
+      {:exnumerator, "~> 1.6"}
     ]
   end
 

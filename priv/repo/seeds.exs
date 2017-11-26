@@ -19,6 +19,6 @@ user_2 = SonderApi.Repo.insert!(%SonderApi.Accounts.User{first_name: "Susan", fa
 party_1 = SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 3})
 party_2 = SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 5})
 
-SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_1.id, party_id: party_1.id})
-SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_2.id, party_id: party_1.id})
-SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_1.id, party_id: party_2.id})
+SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_1.id, party_id: party_1.id, state: "accepted"})
+SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_2.id, party_id: party_1.id, state: "accepted"})
+SonderApi.Repo.insert!(%SonderApi.Parties.UserParty{user_id: user_1.id, party_id: party_2.id, state: "accepted"})
