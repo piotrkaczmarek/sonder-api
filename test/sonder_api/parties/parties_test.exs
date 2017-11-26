@@ -68,6 +68,17 @@ defmodule SonderApi.PartiesTest do
       assert Parties.list_user_parties() == [user_party]
     end
 
+    test "list_members/1 returns only accepted users" do
+      user_1 = create_user()
+      user_2 = create_user(%{email: "email2@example.com", facebook_id: "345"})
+      user_3 = create_user(%{email: "email3@example.com", facebook_id: "123"})
+      party = create_party()
+      create_user_party(%{user_id: user_1.id, party_id: party.id, state: "accepted"})
+      create_user_party(%{user_id: user_2.id, party_id: party.id, state: "rejected"})
+
+      assert Parties.list_members(party.id) == [user_1]
+    end
+
     test "get_user_party!/1 returns the user_party with given id" do
       user = create_user()
       party = create_party()

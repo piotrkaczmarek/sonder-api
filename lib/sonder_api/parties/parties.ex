@@ -104,6 +104,17 @@ defmodule SonderApi.Parties do
   end
 
   alias SonderApi.Parties.UserParty
+  alias SonderApi.Accounts.User
+
+  def list_members(party_id) do
+    query = from u in User,
+              join: up in UserParty,
+              where: up.user_id == u.id
+                       and up.party_id == ^party_id
+                       and up.state == "accepted",
+              order_by: [asc: up.updated_at]
+    Repo.all(query)
+  end
 
   @doc """
   Returns the list of user_parties.

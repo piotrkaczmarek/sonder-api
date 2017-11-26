@@ -37,11 +37,6 @@ defmodule SonderApi.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-
-  def get_user_by_token(token) do
-    Repo.one(from u in User, where: u.facebook_access_token == ^token)
-  end
-
   @doc """
   Gets a single user by facebook_id if none is found it creates one
 

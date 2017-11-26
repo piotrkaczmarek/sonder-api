@@ -15,7 +15,7 @@ defmodule SonderApiWeb.Router do
 
   defp authenticate_user(conn, _) do
     with [token] <- get_req_header(conn, "accesstoken"),
-         user <- SonderApi.Accounts.get_user_by_token(token)
+         user <- SonderApi.Repo.get_by(SonderApi.Accounts.User, facebook_access_token: token)
     do
       assign(conn, :current_user, user)
     else
@@ -48,5 +48,7 @@ defmodule SonderApiWeb.Router do
     pipe_through [:api, :authenticate_user]
 
     resources "/parties", PartyController, only: [:index]
+    put "/parties/:id/request", PartyController, :request
+    put "/parties/:id/dismiss", PartyController, :dismiss
   end
 end

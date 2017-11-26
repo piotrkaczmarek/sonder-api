@@ -61,6 +61,35 @@ defmodule SonderApiWeb.PartyControllerTest do
     end
   end
 
+  describe "request" do
+    setup %{conn: conn}, do: create_user_and_authorize(conn)
+
+    test "creates user_party with state 'requested'", %{conn: conn} do
+      party = create_party()
+
+      conn = put(conn, "/api/parties/#{party.id}/request")
+      assert conn.status, "204"
+
+      [user_party] = Parties.list_user_parties
+      assert conn.assigns[:current_user].id == user_party.user_id
+      assert user_party.state == "requested"
+    end
+  end
+
+  describe "dismiss" do
+    setup %{conn: conn}, do: create_user_and_authorize(conn)
+
+    test "creates user_party with state 'dismissed'", %{conn: conn} do
+      party = create_party()
+
+      conn = put(conn, "/api/parties/#{party.id}/dismiss")
+      assert conn.status, "204"
+
+      [user_party] = Parties.list_user_parties
+      assert conn.assigns[:current_user].id == user_party.user_id
+      assert user_party.state == "dismissed"
+    end
+  end
   # describe "create party" do
   #   test "renders party when data is valid", %{conn: conn} do
   #     conn = post conn, party_path(conn, :create), party: @create_attrs
