@@ -13,6 +13,7 @@ defmodule SonderApiWeb.PartyView do
 
   def render("party.json", %{party: party}) do
     %{id: party.id,
+      name: party.name,
       size: party.size,
       members: render_many(Parties.list_members(party.id), SonderApiWeb.UserView, "user.json")
     }
