@@ -10,11 +10,12 @@ defmodule SonderApiWeb.Router do
   end
 
   pipeline :api do
+    plug CORSPlug, [origin: "http://localhost:4200"]
     plug :accepts, ["json"]
   end
 
   defp authenticate_user(conn, _) do
-    with [token] <- get_req_header(conn, "accesstoken"),
+    with [token] <- get_req_header(conn, "authorization"),
          user <- SonderApi.Repo.get_by(SonderApi.Accounts.User, facebook_access_token: token)
     do
       assign(conn, :current_user, user)
