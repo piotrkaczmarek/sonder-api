@@ -49,6 +49,18 @@ defmodule SonderApi.Accounts do
   end
 
   @doc """
+  Get a single user by token
+
+  """
+  def get_user_by_token(token) do
+    case Repo.get_by(SonderApi.Accounts.User, facebook_access_token: token) do
+      %User{} = user -> { :ok, user}
+      nil -> {:error}
+    end
+  end
+
+
+  @doc """
   Creates a user.
 
   ## Examples

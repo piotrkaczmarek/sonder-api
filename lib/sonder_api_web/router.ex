@@ -16,7 +16,7 @@ defmodule SonderApiWeb.Router do
 
   defp authenticate_user(conn, _) do
     with [token] <- get_req_header(conn, "authorization"),
-         user <- SonderApi.Repo.get_by(SonderApi.Accounts.User, facebook_access_token: token)
+         {:ok, user} <- SonderApi.Accounts.get_user_by_token(token)
     do
       assign(conn, :current_user, user)
     else
