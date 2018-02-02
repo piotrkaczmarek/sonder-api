@@ -12,8 +12,8 @@ defmodule SonderApiWeb.PartyController do
     render(conn, "index.json", parties: parties)
   end
 
-  def request(conn, %{"id" => party_id}) do
-    with {:ok, %UserParty{}} <- Parties.create_user_party(%{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "requested"}) do
+  def apply(conn, %{"id" => party_id}) do
+    with {:ok, %UserParty{}} <- Parties.create_user_party(%{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "applied"}) do
       send_resp(conn, :no_content, "")
     end
   end

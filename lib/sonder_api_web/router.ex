@@ -49,7 +49,7 @@ defmodule SonderApiWeb.Router do
     pipe_through [:api, :authenticate_user]
 
     resources "/parties", PartyController, only: [:index, :create]
-    put "/parties/:id/request", PartyController, :request
+    put "/parties/:id/apply", PartyController, :apply
     put "/parties/:id/dismiss", PartyController, :dismiss
   end
 end
