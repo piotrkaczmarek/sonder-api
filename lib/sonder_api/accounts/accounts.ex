@@ -24,6 +24,12 @@ defmodule SonderApi.Accounts do
   @doc """
   Gets a single user.
 
+  """
+  def get_user(id), do: Repo.get(User, id)
+
+  @doc """
+  Gets a single user.
+
   Raises `Ecto.NoResultsError` if the User does not exist.
 
   ## Examples
@@ -45,17 +51,6 @@ defmodule SonderApi.Accounts do
     case Repo.one(from u in User, where: u.facebook_id == ^attrs[:facebook_id]) do
       %User{} = user -> { :ok, user }
       nil -> create_user(attrs)
-    end
-  end
-
-  @doc """
-  Get a single user by token
-
-  """
-  def get_user_by_token(token) do
-    case Repo.get_by(SonderApi.Accounts.User, facebook_access_token: token) do
-      %User{} = user -> { :ok, user}
-      nil -> {:error}
     end
   end
 

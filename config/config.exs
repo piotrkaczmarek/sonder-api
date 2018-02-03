@@ -25,3 +25,7 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+config :sonder_api, SonderApi.Guardian,
+       issuer: "sonder_api",
+       secret_key: "oRtoBAvy7Chq2EYZBHrpvYWJoAojG70q0TXdqcjC1FQkWbhiCu/0x92/ZVrhT2sx" # mix guardian.gen.secret

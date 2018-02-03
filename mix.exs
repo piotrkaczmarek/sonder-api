@@ -44,7 +44,8 @@ defmodule SonderApi.Mixfile do
       {:tesla, "~> 0.9.0"},
       {:poison, ">= 1.0.0"},
       {:cors_plug, "~> 1.2"},
-      {:exnumerator, "~> 1.6"}
+      {:exnumerator, "~> 1.6"},
+      {:guardian, "~> 1.0"}
     ]
   end
 

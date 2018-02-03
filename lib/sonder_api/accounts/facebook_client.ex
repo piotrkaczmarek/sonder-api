@@ -28,8 +28,7 @@ defmodule SonderApi.Accounts.FacebookClient do
     { :ok, %{
         facebook_id: data["id"],
         first_name: data["first_name"],
-        email: data["email"],
-        facebook_access_token: access_token
+        email: data["email"]
       }
     }
   end

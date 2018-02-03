@@ -4,6 +4,7 @@ defmodule SonderApiWeb.UserController do
   alias SonderApi.Accounts
   alias SonderApi.Accounts.User
   alias SonderApi.Accounts.FacebookClient
+  alias SonderApi.Guardian
 
   action_fallback SonderApiWeb.FallbackController
 
@@ -43,9 +44,10 @@ defmodule SonderApiWeb.UserController do
 
   def authenticate(conn, %{"access_token" => access_token}) do
     with {:ok, data} <- FacebookClient.fetch_user_data(access_token),
-         {:ok, user} <- Accounts.get_or_create_user(data)
+         {:ok, user} <- Accounts.get_or_create_user(data),
+         {:ok, token, claims} <- Guardian.encode_and_sign(user)
     do
-      render(conn, "show_private.json", user: user)
+      render(conn, "token.json", token: token)
     end
   end
 end

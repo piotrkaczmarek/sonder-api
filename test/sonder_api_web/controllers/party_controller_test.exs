@@ -16,7 +16,7 @@ defmodule SonderApiWeb.PartyControllerTest do
 
   def fixture(:user) do
     token = "123456"
-    {:ok, user } = Accounts.create_user(%{first_name: "Bob", email: "test@example.com", facebook_access_token: token, facebook_id: "1234"})
+    {:ok, user } = Accounts.create_user(%{first_name: "Bob", email: "test@example.com", auth_token: token, facebook_id: "1234"})
     { user, token }
   end
 
@@ -31,8 +31,8 @@ defmodule SonderApiWeb.PartyControllerTest do
     test "returns all parties with users", %{conn: conn} do
       party_1 = create_party()
       party_2 = create_party()
-      user_1 = create_user(%{email: "email1@example.com", facebook_access_token: "abc", facebook_id: "123", first_name: "Bob"})
-      user_2 = create_user(%{email: "email2@example.com", facebook_access_token: "bcd", facebook_id: "234", first_name: "Susan"})
+      user_1 = create_user(%{email: "email1@example.com", auth_token: "abc", facebook_id: "123", first_name: "Bob"})
+      user_2 = create_user(%{email: "email2@example.com", auth_token: "bcd", facebook_id: "234", first_name: "Susan"})
 
       create_user_party(%{user_id: user_1.id, party_id: party_1.id, state: "accepted"})
       create_user_party(%{user_id: user_1.id, party_id: party_2.id, state: "accepted"})
@@ -150,7 +150,7 @@ defmodule SonderApiWeb.PartyControllerTest do
   defp create_user(attrs \\ %{}) do
     {:ok, user} =
       attrs
-      |> Enum.into(%{email: "email@example.com", facebook_access_token: "some facebook_access_token", facebook_id: "some facebook_id", first_name: "some first_name"})
+      |> Enum.into(%{email: "email@example.com", auth_token: "some auth_token", facebook_id: "some facebook_id", first_name: "some first_name"})
       |> SonderApi.Accounts.create_user()
 
     user

@@ -16,7 +16,7 @@ defmodule SonderApiWeb.Router do
 
   defp authenticate_user(conn, _) do
     with [token] <- get_req_header(conn, "authorization"),
-         {:ok, user} <- SonderApi.Accounts.get_user_by_token(token)
+         {:ok, user, claims} <- SonderApi.Guardian.resource_from_token(token)
     do
       assign(conn, :current_user, user)
     else

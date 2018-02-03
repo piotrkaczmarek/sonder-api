@@ -6,9 +6,9 @@ defmodule SonderApi.AccountsTest do
   describe "users" do
     alias SonderApi.Accounts.User
 
-    @valid_attrs %{email: "some email", facebook_access_token: "some facebook_access_token", facebook_id: "some facebook_id", first_name: "some first_name"}
-    @update_attrs %{email: "some updated email", facebook_access_token: "some updated facebook_access_token", facebook_id: "some updated facebook_id", first_name: "some updated first_name"}
-    @invalid_attrs %{email: nil, facebook_access_token: nil, facebook_id: nil, first_name: nil}
+    @valid_attrs %{email: "some email", auth_token: "some auth_token", facebook_id: "some facebook_id", first_name: "some first_name"}
+    @update_attrs %{email: "some updated email", auth_token: "some updated auth_token", facebook_id: "some updated facebook_id", first_name: "some updated first_name"}
+    @invalid_attrs %{email: nil, auth_token: nil, facebook_id: nil, first_name: nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -32,7 +32,7 @@ defmodule SonderApi.AccountsTest do
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
       assert user.email == "some email"
-      assert user.facebook_access_token == "some facebook_access_token"
+      assert user.auth_token == "some auth_token"
       assert user.facebook_id == "some facebook_id"
       assert user.first_name == "some first_name"
     end
@@ -46,7 +46,7 @@ defmodule SonderApi.AccountsTest do
       assert {:ok, user} = Accounts.update_user(user, @update_attrs)
       assert %User{} = user
       assert user.email == "some updated email"
-      assert user.facebook_access_token == "some updated facebook_access_token"
+      assert user.auth_token == "some updated auth_token"
       assert user.facebook_id == "some updated facebook_id"
       assert user.first_name == "some updated first_name"
     end
@@ -76,7 +76,7 @@ defmodule SonderApi.AccountsTest do
     test "get_or_create_user/1 creates missing user" do
       assert {:ok, %User{} = user} = Accounts.get_or_create_user(@valid_attrs)
       assert user.email == "some email"
-      assert user.facebook_access_token == "some facebook_access_token"
+      assert user.auth_token == "some auth_token"
       assert user.facebook_id == "some facebook_id"
       assert user.first_name == "some first_name"
     end

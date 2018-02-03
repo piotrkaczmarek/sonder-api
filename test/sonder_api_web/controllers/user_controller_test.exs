@@ -4,9 +4,9 @@ defmodule SonderApiWeb.UserControllerTest do
   alias SonderApi.Accounts
   alias SonderApi.Accounts.User
 
-  @create_attrs %{email: "some email", facebook_access_token: "some facebook_access_token", facebook_id: "some facebook_id", first_name: "some first_name"}
-  @update_attrs %{email: "some updated email", facebook_access_token: "some updated facebook_access_token", facebook_id: "some updated facebook_id", first_name: "some updated first_name"}
-  @invalid_attrs %{email: nil, facebook_access_token: nil, facebook_id: nil, first_name: nil}
+  @create_attrs %{email: "some email", auth_token: "some auth_token", facebook_id: "some facebook_id", first_name: "some first_name"}
+  @update_attrs %{email: "some updated email", auth_token: "some updated auth_token", facebook_id: "some updated facebook_id", first_name: "some updated first_name"}
+  @invalid_attrs %{email: nil, auth_token: nil, facebook_id: nil, first_name: nil}
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)
@@ -33,7 +33,7 @@ defmodule SonderApiWeb.UserControllerTest do
   #     assert json_response(conn, 200)["data"] == %{
   #       "id" => id,
   #       "email" => "some email",
-  #       "facebook_access_token" => "some facebook_access_token",
+  #       "auth_token" => "some auth_token",
   #       "facebook_id" => "some facebook_id",
   #       "first_name" => "some first_name"}
   #   end
@@ -55,7 +55,7 @@ defmodule SonderApiWeb.UserControllerTest do
   #     assert json_response(conn, 200)["data"] == %{
   #       "id" => id,
   #       "email" => "some updated email",
-  #       "facebook_access_token" => "some updated facebook_access_token",
+  #       "auth_token" => "some updated auth_token",
   #       "facebook_id" => "some updated facebook_id",
   #       "first_name" => "some updated first_name"}
   #   end

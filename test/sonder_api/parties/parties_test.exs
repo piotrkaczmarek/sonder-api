@@ -140,7 +140,7 @@ defmodule SonderApi.PartiesTest do
   defp create_user(attrs \\ %{}) do
     {:ok, user} =
       attrs
-      |> Enum.into(%{email: "some email", facebook_access_token: "some facebook_access_token", facebook_id: "some facebook_id", first_name: "some first_name"})
+      |> Enum.into(%{email: "some email", auth_token: "some auth_token", facebook_id: "some facebook_id", first_name: "some first_name"})
       |> SonderApi.Accounts.create_user()
 
     user

@@ -12,8 +12,8 @@
 
 
 
-user_1 = SonderApi.Repo.insert!(%SonderApi.Accounts.User{first_name: "Bob", facebook_id: "12345", facebook_access_token: "abcd"})
-user_2 = SonderApi.Repo.insert!(%SonderApi.Accounts.User{first_name: "Susan", facebook_id: "23456", facebook_access_token: "bcde"})
+user_1 = SonderApi.Repo.insert!(%SonderApi.Accounts.User{first_name: "Bob", facebook_id: "12345", auth_token: "abcd"})
+user_2 = SonderApi.Repo.insert!(%SonderApi.Accounts.User{first_name: "Susan", facebook_id: "23456", auth_token: "bcde"})
 
 
 party_1 = SonderApi.Repo.insert!(%SonderApi.Parties.Party{size: 3, name: "Wild Cats"})

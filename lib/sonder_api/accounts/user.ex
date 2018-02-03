@@ -6,7 +6,7 @@ defmodule SonderApi.Accounts.User do
 
   schema "users" do
     field :email, :string
-    field :facebook_access_token, :string
+    field :auth_token, :string
     field :facebook_id, :string
     field :first_name, :string
 
@@ -17,8 +17,8 @@ defmodule SonderApi.Accounts.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:first_name, :email, :facebook_id, :facebook_access_token])
-    |> validate_required([:first_name, :facebook_id, :facebook_access_token])
+    |> cast(attrs, [:first_name, :email, :facebook_id, :auth_token])
+    |> validate_required([:first_name, :facebook_id, :auth_token])
     |> unique_constraint(:email)
     |> unique_constraint(:facebook_id)
   end
