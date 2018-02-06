@@ -18,7 +18,7 @@ defmodule SonderApi.Accounts.User do
   def changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:first_name, :email, :facebook_id, :auth_token])
-    |> validate_required([:first_name, :facebook_id, :auth_token])
+    |> validate_required([:first_name, :facebook_id])
     |> unique_constraint(:email)
     |> unique_constraint(:facebook_id)
   end

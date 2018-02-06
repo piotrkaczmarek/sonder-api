@@ -7,6 +7,7 @@ defmodule SonderApi.Parties do
   alias SonderApi.Repo
 
   alias SonderApi.Parties.Party
+  alias SonderApi.Parties.UserParty
 
   @doc """
   Returns the list of parties.
@@ -179,6 +180,17 @@ defmodule SonderApi.Parties do
     user_party
     |> UserParty.changeset(attrs)
     |> Repo.update()
+  end
+
+
+  @doc """
+  Creates or Updates a user_party.
+  """
+  def upsert_user_party(attrs = %{user_id: user_id, party_id: party_id, state: state}) do
+    case Repo.one(from up in UserParty, where: up.user_id == ^user_id and up.party_id == ^party_id) do
+      %UserParty{} = user_party -> update_user_party(user_party, attrs)
+      nil -> create_user_party(attrs)
+    end
   end
 
   @doc """

@@ -13,13 +13,15 @@ defmodule SonderApiWeb.PartyController do
   end
 
   def apply(conn, %{"id" => party_id}) do
-    with {:ok, %UserParty{}} <- Parties.create_user_party(%{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "applied"}) do
+    attributes = %{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "applied"}
+    with {:ok, %UserParty{}} <- Parties.upsert_user_party(attributes) do
       send_resp(conn, :no_content, "")
     end
   end
 
   def dismiss(conn, %{"id" => party_id}) do
-    with {:ok, %UserParty{}} <- Parties.create_user_party(%{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "dismissed"}) do
+    attributes = %{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "dismissed"}
+    with {:ok, %UserParty{}} <- Parties.upsert_user_party(attributes) do
       send_resp(conn, :no_content, "")
     end
   end

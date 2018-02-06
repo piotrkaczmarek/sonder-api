@@ -22,5 +22,6 @@ defmodule SonderApi.Parties.UserParty do
     user_party
     |> cast(attrs, [:user_id, :party_id, :state])
     |> validate_required([:user_id, :party_id, :state])
+    |> unique_constraint(:party_id, [name: :index_user_parties_uniqueness])
   end
 end
