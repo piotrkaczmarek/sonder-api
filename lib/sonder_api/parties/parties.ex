@@ -24,6 +24,42 @@ defmodule SonderApi.Parties do
   end
 
   @doc """
+  Returns the list of parties that are suggested to given user.
+
+  ## Examples
+
+      iex> list_suggested_parties(5)
+      [%Party{}, ...]
+
+  """
+  def list_suggested_parties(user_id) do
+    query = from party in Party,
+              join: user_party in UserParty, where: user_party.party_id == party.id,
+              where: user_party.user_id == ^user_id and user_party.state == "suggested"
+    Repo.all(query)
+    |> Repo.preload(:users)
+  end
+
+  @doc """
+  Returns the list of parties that accepted given user.
+
+  ## Examples
+
+      iex> list_accepted_parties(5)
+      [%Party{}, ...]
+
+  """
+  def list_accepted_parties(user_id) do
+    query = from party in Party,
+              join: user_party in UserParty, where: user_party.party_id == party.id,
+              where: user_party.user_id == ^user_id and user_party.state == "accepted"
+    Repo.all(query)
+    |> Repo.preload(:users)
+  end
+
+
+
+  @doc """
   Gets a single party.
 
   Raises `Ecto.NoResultsError` if the Party does not exist.

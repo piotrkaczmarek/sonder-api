@@ -48,7 +48,9 @@ defmodule SonderApiWeb.Router do
   scope "/api", SonderApiWeb do
     pipe_through [:api, :authenticate_user]
 
-    resources "/parties", PartyController, only: [:index, :create]
+    resources "/parties", PartyController, only: [:create]
+    get "/parties/suggested", PartyController, :suggested
+    get "/parties/accepted", PartyController, :accepted
     put "/parties/:id/apply", PartyController, :apply
     put "/parties/:id/dismiss", PartyController, :dismiss
   end

@@ -1,6 +1,6 @@
 defmodule SonderApi.Parties.State do
   use Exnumerator,
-    values: ["applied", "dismissed", "accepted", "rejected"]
+    values: ["suggested", "applied", "dismissed", "accepted", "rejected"]
 end
 
 defmodule SonderApi.Parties.UserParty do

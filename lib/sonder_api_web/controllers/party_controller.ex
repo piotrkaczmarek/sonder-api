@@ -7,8 +7,13 @@ defmodule SonderApiWeb.PartyController do
 
   action_fallback SonderApiWeb.FallbackController
 
-  def index(conn, _params) do
-    parties = Parties.list_parties()
+  def suggested(conn, _params) do
+    parties = Parties.list_suggested_parties(conn.assigns[:current_user].id)
+    render(conn, "index.json", parties: parties)
+  end
+
+  def accepted(conn, _params) do
+    parties = Parties.list_accepted_parties(conn.assigns[:current_user].id)
     render(conn, "index.json", parties: parties)
   end
 
