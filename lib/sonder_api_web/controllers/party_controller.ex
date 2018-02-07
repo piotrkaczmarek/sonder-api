@@ -18,24 +18,31 @@ defmodule SonderApiWeb.PartyController do
   end
 
   def apply(conn, %{"id" => party_id}) do
-    attributes = %{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "applied"}
-    with {:ok, %UserParty{}} <- Parties.upsert_user_party(attributes) do
+    with {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
+                                                            party_id: party_id,
+                                                            state: "applied"})
+    do
       send_resp(conn, :no_content, "")
     end
   end
 
   def dismiss(conn, %{"id" => party_id}) do
-    attributes = %{user_id: conn.assigns[:current_user].id, party_id: party_id, state: "dismissed"}
-    with {:ok, %UserParty{}} <- Parties.upsert_user_party(attributes) do
+    with {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
+                                                            party_id: party_id,
+                                                            state: "dismissed"})
+    do
       send_resp(conn, :no_content, "")
     end
   end
 
   def create(conn, %{"party" => party_params}) do
-    with {:ok, %Party{} = party} <- Parties.create_party(party_params) do
+    with {:ok, %Party{} = party} <- Parties.create_party(party_params),
+         {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
+                                                            party_id: party.id,
+                                                            state: "accepted"})
+    do
       conn
       |> put_status(:created)
-      # |> put_resp_header("location", party_path(conn, :show, party))
       |> render("show.json", party: party)
     end
   end
