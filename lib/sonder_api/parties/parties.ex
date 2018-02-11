@@ -7,6 +7,7 @@ defmodule SonderApi.Parties do
   alias SonderApi.Repo
 
   alias SonderApi.Parties.Party
+  alias SonderApi.Accounts.User
   alias SonderApi.Parties.UserParty
 
   @doc """
@@ -57,7 +58,21 @@ defmodule SonderApi.Parties do
     |> Repo.preload(:users)
   end
 
+ @doc """
+  Returns the list of people who applied to given party.
 
+  ## Examples
+
+      iex> list_applicants(5)
+      [%User{}, ...]
+
+  """
+  def list_applicants(party_id) do
+    query = from user in User,
+              join: user_party in UserParty, where: user_party.user_id == user.id,
+              where: user_party.party_id == ^party_id and user_party.state == "applied"
+    Repo.all(query)
+  end
 
   @doc """
   Gets a single party.
@@ -182,6 +197,25 @@ defmodule SonderApi.Parties do
   """
   def get_user_party!(id), do: Repo.get!(UserParty, id)
 
+
+  @doc """
+  Gets a single user_party.
+
+  Returns `nil` if the User party does not exist.
+
+  ## Examples
+
+      iex> get_user_party!(party_id: 1, user_id: 2)
+      %UserParty{}
+
+      iex> get_user_party!(456)
+      nil
+
+  """
+  def get_user_party(%{party_id: party_id, user_id: user_id}) do
+    Repo.one(from up in UserParty, where: up.user_id == ^user_id and up.party_id == ^party_id)
+  end
+
   @doc """
   Creates a user_party.
 
@@ -223,7 +257,7 @@ defmodule SonderApi.Parties do
   Creates or Updates a user_party.
   """
   def upsert_user_party(attrs = %{user_id: user_id, party_id: party_id, state: state}) do
-    case Repo.one(from up in UserParty, where: up.user_id == ^user_id and up.party_id == ^party_id) do
+    case get_user_party(%{user_id: user_id, party_id: party_id}) do
       %UserParty{} = user_party -> update_user_party(user_party, attrs)
       nil -> create_user_party(attrs)
     end

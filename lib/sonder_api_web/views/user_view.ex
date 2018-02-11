@@ -27,7 +27,6 @@ defmodule SonderApiWeb.UserView do
     %{id: user.id,
       first_name: user.first_name,
       email: user.email,
-      facebook_id: user.facebook_id,
-      auth_token: user.auth_token}
+      facebook_id: user.facebook_id}
   end
 end

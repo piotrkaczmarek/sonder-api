@@ -51,6 +51,7 @@ defmodule SonderApiWeb.Router do
     resources "/parties", PartyController, only: [:create]
     get "/parties/suggested", PartyController, :suggested
     get "/parties/accepted", PartyController, :accepted
+    get "/parties/:id/applicants", PartyController, :applicants
     put "/parties/:id/apply", PartyController, :apply
     put "/parties/:id/dismiss", PartyController, :dismiss
   end

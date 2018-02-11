@@ -1,6 +1,7 @@
 defmodule SonderApiWeb.PartyView do
   use SonderApiWeb, :view
   alias SonderApiWeb.PartyView
+  alias SonderApiWeb.UserView
   alias SonderApi.Parties
 
   def render("index.json", %{parties: parties}) do
@@ -17,5 +18,9 @@ defmodule SonderApiWeb.PartyView do
       size: party.size,
       members: render_many(Parties.list_members(party.id), SonderApiWeb.UserView, "user.json")
     }
+  end
+
+  def render("people.json", %{people: people}) do
+    %{data: render_many(people, UserView, "user.json")}
   end
 end

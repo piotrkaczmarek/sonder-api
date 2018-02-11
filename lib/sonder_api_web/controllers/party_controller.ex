@@ -17,6 +17,15 @@ defmodule SonderApiWeb.PartyController do
     render(conn, "index.json", parties: parties)
   end
 
+  def applicants(conn, %{"id" => party_id}) do
+    with party <- Parties.get_user_party(%{user_id: conn.assigns[:current_user].id, party_id: party_id}),
+        "accepted" <- party.state
+    do
+      applicants = Parties.list_applicants(party_id)
+      render(conn, "people.json", people: applicants)
+    end
+  end
+
   def apply(conn, %{"id" => party_id}) do
     with {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
                                                             party_id: party_id,
