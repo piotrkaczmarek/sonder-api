@@ -7,6 +7,7 @@ defmodule SonderApi.Parties.Party do
   schema "parties" do
     field :size, :integer
     field :name, :string
+    field :owner_id, :id
 
     many_to_many :users, SonderApi.Accounts.User, join_through: "user_parties"
     timestamps()
@@ -15,7 +16,7 @@ defmodule SonderApi.Parties.Party do
   @doc false
   def changeset(%Party{} = party, attrs) do
     party
-    |> cast(attrs, [:size, :name])
-    |> validate_required([:size, :name])
+    |> cast(attrs, [:size, :name, :owner_id])
+    |> validate_required([:size, :name, :owner_id])
   end
 end

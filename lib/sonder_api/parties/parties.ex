@@ -90,6 +90,10 @@ defmodule SonderApi.Parties do
   """
   def get_party!(id), do: Repo.get!(Party, id)
 
+  def get_party(%{owner_id: owner_id}) do
+    Repo.one(from party in Party, where: party.owner_id == ^owner_id)
+  end
+
   @doc """
   Creates a party.
 

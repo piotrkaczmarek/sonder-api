@@ -26,6 +26,19 @@ defmodule SonderApiWeb.PartyController do
     end
   end
 
+  def create(conn, %{"party" => party_params}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         {:ok, %Party{} = party} <- Parties.create_party(Map.merge(party_params, %{"owner_id" => current_user_id})),
+         {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: current_user_id,
+                                                            party_id: party.id,
+                                                            state: "accepted"})
+    do
+      conn
+      |> put_status(:created)
+      |> render("show.json", party: party)
+    end
+  end
+
   def apply(conn, %{"id" => party_id}) do
     with {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
                                                             party_id: party_id,
@@ -44,15 +57,23 @@ defmodule SonderApiWeb.PartyController do
     end
   end
 
-  def create(conn, %{"party" => party_params}) do
-    with {:ok, %Party{} = party} <- Parties.create_party(party_params),
-         {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
-                                                            party_id: party.id,
+  def accept(conn, %{"party_id" => party_id, "user_id" => user_id}) do
+    with %Party{} = party <- Parties.get_party(%{owner_id: conn.assigns[:current_user].id}),
+         {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: user_id,
+                                                            party_id: party_id,
                                                             state: "accepted"})
     do
-      conn
-      |> put_status(:created)
-      |> render("show.json", party: party)
+      send_resp(conn, :no_content, "")
+    end
+  end
+
+  def reject(conn, %{"party_id" => party_id, "user_id" => user_id}) do
+    with %Party{} = party <- Parties.get_party(%{owner_id: conn.assigns[:current_user].id}),
+         {:ok, %UserParty{}} <- Parties.upsert_user_party(%{user_id: user_id,
+                                                            party_id: party_id,
+                                                            state: "rejected"})
+    do
+      send_resp(conn, :no_content, "")
     end
   end
 
