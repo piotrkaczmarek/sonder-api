@@ -1,8 +1,8 @@
 defmodule SonderApiWeb.PartyControllerTest do
   use SonderApiWeb.ConnCase
 
-  alias SonderApi.Parties
-  alias SonderApi.Parties.Party
+  alias SonderApi.Subs
+  alias SonderApi.Subs.Party
   alias SonderApi.Accounts
 
   @create_attrs %{size: 42}
@@ -10,7 +10,7 @@ defmodule SonderApiWeb.PartyControllerTest do
   @invalid_attrs %{size: nil}
 
   def fixture(:party) do
-    {:ok, party} = Parties.create_party(@create_attrs)
+    {:ok, party} = Subs.create_party(@create_attrs)
     party
   end
 
@@ -70,7 +70,7 @@ defmodule SonderApiWeb.PartyControllerTest do
       conn = put(conn, "/api/parties/#{party.id}/request")
       assert conn.status, "204"
 
-      [user_party] = Parties.list_user_parties
+      [user_party] = Subs.list_user_parties
       assert conn.assigns[:current_user].id == user_party.user_id
       assert user_party.state == "requested"
     end
@@ -85,7 +85,7 @@ defmodule SonderApiWeb.PartyControllerTest do
       conn = put(conn, "/api/parties/#{party.id}/dismiss")
       assert conn.status, "204"
 
-      [user_party] = Parties.list_user_parties
+      [user_party] = Subs.list_user_parties
       assert conn.assigns[:current_user].id == user_party.user_id
       assert user_party.state == "dismissed"
     end
@@ -142,7 +142,7 @@ defmodule SonderApiWeb.PartyControllerTest do
     {:ok, party} =
       attrs
       |> Enum.into(%{size: 4})
-      |> Parties.create_party()
+      |> Subs.create_party()
 
     party
   end
@@ -159,7 +159,7 @@ defmodule SonderApiWeb.PartyControllerTest do
   defp create_user_party(attrs \\ %{}) do
     {:ok, user_party} =
       attrs
-      |> Parties.create_user_party()
+      |> Subs.create_user_party()
 
     user_party
   end

@@ -10,7 +10,7 @@ defmodule SonderApi.Accounts.User do
     field :facebook_id, :string
     field :first_name, :string
 
-    many_to_many :parties, SonderApi.Parties.Party, join_through: "user_parties"
+    many_to_many :parties, SonderApi.Subs.Party, join_through: "user_parties"
     timestamps()
   end
 

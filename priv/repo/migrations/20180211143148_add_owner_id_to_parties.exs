@@ -1,4 +1,4 @@
-defmodule SonderApi.Repo.Migrations.AddOwnerIdToParties do
+defmodule SonderApi.Repo.Migrations.AddOwnerIdToSubs do
   use Ecto.Migration
 
   def change do

@@ -10,10 +10,10 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias SonderApi.Parties
+alias SonderApi.Subs
 alias SonderApi.Accounts
-alias SonderApi.Parties.Party
-alias SonderApi.Parties.UserParty
+alias SonderApi.Subs.Party
+alias SonderApi.Subs.UserParty
 alias SonderApi.Accounts.User
 alias SonderApi.Repo
 

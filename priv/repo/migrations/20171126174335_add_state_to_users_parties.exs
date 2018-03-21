@@ -1,4 +1,4 @@
-defmodule SonderApi.Repo.Migrations.AddStateToUsersParties do
+defmodule SonderApi.Repo.Migrations.AddStateToUsersSubs do
   use Ecto.Migration
 
   def change do

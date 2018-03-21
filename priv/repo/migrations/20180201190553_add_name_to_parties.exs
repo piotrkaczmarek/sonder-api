@@ -1,4 +1,4 @@
-defmodule SonderApi.Repo.Migrations.AddNameToParties do
+defmodule SonderApi.Repo.Migrations.AddNameToSubs do
   use Ecto.Migration
 
   def change do

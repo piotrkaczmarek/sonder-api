@@ -1,18 +1,18 @@
-defmodule SonderApi.Parties.State do
+defmodule SonderApi.Subs.State do
   use Exnumerator,
     values: ["suggested", "applied", "dismissed", "accepted", "rejected"]
 end
 
-defmodule SonderApi.Parties.UserParty do
+defmodule SonderApi.Subs.UserParty do
   use Ecto.Schema
   import Ecto.Changeset
-  alias SonderApi.Parties.UserParty
+  alias SonderApi.Subs.UserParty
 
 
   schema "user_parties" do
     field :user_id, :id
     field :party_id, :id
-    field :state, SonderApi.Parties.State
+    field :state, SonderApi.Subs.State
 
     timestamps()
   end

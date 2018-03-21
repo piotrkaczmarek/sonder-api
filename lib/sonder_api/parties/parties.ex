@@ -1,14 +1,14 @@
-defmodule SonderApi.Parties do
+defmodule SonderApi.Subs do
   @moduledoc """
-  The Parties context.
+  The Subs context.
   """
 
   import Ecto.Query, warn: false
   alias SonderApi.Repo
 
-  alias SonderApi.Parties.Party
+  alias SonderApi.Subs.Party
   alias SonderApi.Accounts.User
-  alias SonderApi.Parties.UserParty
+  alias SonderApi.Subs.UserParty
 
   @doc """
   Returns the list of parties.
@@ -159,7 +159,7 @@ defmodule SonderApi.Parties do
     Party.changeset(party, %{})
   end
 
-  alias SonderApi.Parties.UserParty
+  alias SonderApi.Subs.UserParty
   alias SonderApi.Accounts.User
 
   def list_members(party_id) do

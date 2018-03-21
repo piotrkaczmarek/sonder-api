@@ -1,7 +1,7 @@
-defmodule SonderApi.Parties.Party do
+defmodule SonderApi.Subs.Party do
   use Ecto.Schema
   import Ecto.Changeset
-  alias SonderApi.Parties.Party
+  alias SonderApi.Subs.Party
 
 
   schema "parties" do
