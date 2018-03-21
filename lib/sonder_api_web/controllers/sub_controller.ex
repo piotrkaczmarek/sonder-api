@@ -19,9 +19,9 @@ defmodule SonderApiWeb.SubController do
 
   def applicants(conn, %{"id" => sub_id}) do
     with sub <- Subs.get_user_sub(%{user_id: conn.assigns[:current_user].id, sub_id: sub_id}),
-        "accepted" <- sub.state
+        "accepted" <- sub.state,
+        applicants <- Subs.list_applicants(sub_id)
     do
-      applicants = Subs.list_applicants(sub_id)
       render(conn, "people.json", people: applicants)
     end
   end

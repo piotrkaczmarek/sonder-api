@@ -1,0 +1,21 @@
+defmodule SonderApi.Posts.Post do
+  use Ecto.Schema
+  import Ecto.Changeset
+  alias SonderApi.Posts.Post
+
+
+  schema "posts" do
+    field :user_id, :id
+    field :sub_id, :id
+    field :body, :string
+
+    timestamps()
+  end
+
+  @doc false
+  def changeset(%Post{} = post, attrs) do
+    post
+    |> cast(attrs, [:body])
+    |> validate_required([:body])
+  end
+end

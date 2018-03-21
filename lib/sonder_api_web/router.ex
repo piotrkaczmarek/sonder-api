@@ -56,5 +56,7 @@ defmodule SonderApiWeb.Router do
     get "/subs/:id/applicants", SubController, :applicants
     put "/subs/:sub_id/applicants/:user_id/accept", SubController, :accept
     put "/subs/:sub_id/applicants/:user_id/reject", SubController, :reject
+
+    get "/subs/:id/posts", PostController, :index
   end
 end
