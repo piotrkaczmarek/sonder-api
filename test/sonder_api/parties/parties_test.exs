@@ -11,130 +11,130 @@ defmodule SonderApi.SubsTest do
     @invalid_attrs %{size: nil}
 
     test "list_parties/0 returns all parties" do
-      party = create_party() |> Repo.preload(:users)
-      assert Subs.list_parties() == [party]
+      sub = create_sub() |> Repo.preload(:users)
+      assert Subs.list_parties() == [sub]
     end
 
-    test "get_party!/1 returns the party with given id" do
-      party = create_party()
-      assert Subs.get_party!(party.id) == party
+    test "get_sub!/1 returns the sub with given id" do
+      sub = create_sub()
+      assert Subs.get_sub!(sub.id) == sub
     end
 
-    test "create_party/1 with valid data creates a party" do
-      assert {:ok, %Sub{} = party} = Subs.create_party(@valid_attrs)
-      assert party.size == 42
+    test "create_sub/1 with valid data creates a sub" do
+      assert {:ok, %Sub{} = sub} = Subs.create_sub(@valid_attrs)
+      assert sub.size == 42
     end
 
-    test "create_party/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Subs.create_party(@invalid_attrs)
+    test "create_sub/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Subs.create_sub(@invalid_attrs)
     end
 
-    test "update_party/2 with valid data updates the party" do
-      party = create_party()
-      assert {:ok, party} = Subs.update_party(party, @update_attrs)
-      assert %Sub{} = party
-      assert party.size == 43
+    test "update_sub/2 with valid data updates the sub" do
+      sub = create_sub()
+      assert {:ok, sub} = Subs.update_sub(sub, @update_attrs)
+      assert %Sub{} = sub
+      assert sub.size == 43
     end
 
-    test "update_party/2 with invalid data returns error changeset" do
-      party = create_party()
-      assert {:error, %Ecto.Changeset{}} = Subs.update_party(party, @invalid_attrs)
-      assert party == Subs.get_party!(party.id)
+    test "update_sub/2 with invalid data returns error changeset" do
+      sub = create_sub()
+      assert {:error, %Ecto.Changeset{}} = Subs.update_sub(sub, @invalid_attrs)
+      assert sub == Subs.get_sub!(sub.id)
     end
 
-    test "delete_party/1 deletes the party" do
-      party = create_party()
-      assert {:ok, %Sub{}} = Subs.delete_party(party)
-      assert_raise Ecto.NoResultsError, fn -> Subs.get_party!(party.id) end
+    test "delete_sub/1 deletes the sub" do
+      sub = create_sub()
+      assert {:ok, %Sub{}} = Subs.delete_sub(sub)
+      assert_raise Ecto.NoResultsError, fn -> Subs.get_sub!(sub.id) end
     end
 
-    test "change_party/1 returns a party changeset" do
-      party = create_party()
-      assert %Ecto.Changeset{} = Subs.change_party(party)
+    test "change_sub/1 returns a sub changeset" do
+      sub = create_sub()
+      assert %Ecto.Changeset{} = Subs.change_sub(sub)
     end
   end
 
   describe "user_parties" do
     alias SonderApi.Subs.UserSub
 
-    @valid_attrs %{user_id: 1, party_id: 1}
+    @valid_attrs %{user_id: 1, sub_id: 1}
     @update_attrs %{}
     @invalid_attrs %{user_id: nil}
 
     test "list_user_parties/0 returns all user_parties" do
       user = create_user()
-      party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
-      assert Subs.list_user_parties() == [user_party]
+      sub = create_sub()
+      user_sub = create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
+      assert Subs.list_user_parties() == [user_sub]
     end
 
     test "list_members/1 returns only accepted users" do
       user_1 = create_user()
       user_2 = create_user(%{email: "email2@example.com", facebook_id: "345"})
       user_3 = create_user(%{email: "email3@example.com", facebook_id: "123"})
-      party = create_party()
-      create_user_party(%{user_id: user_1.id, party_id: party.id, state: "accepted"})
-      create_user_party(%{user_id: user_2.id, party_id: party.id, state: "rejected"})
+      sub = create_sub()
+      create_user_sub(%{user_id: user_1.id, sub_id: sub.id, state: "accepted"})
+      create_user_sub(%{user_id: user_2.id, sub_id: sub.id, state: "rejected"})
 
-      assert Subs.list_members(party.id) == [user_1]
+      assert Subs.list_members(sub.id) == [user_1]
     end
 
-    test "get_user_party!/1 returns the user_party with given id" do
+    test "get_user_sub!/1 returns the user_sub with given id" do
       user = create_user()
-      party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
-      assert Subs.get_user_party!(user_party.id) == user_party
+      sub = create_sub()
+      user_sub = create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
+      assert Subs.get_user_sub!(user_sub.id) == user_sub
     end
 
-    test "create_user_party/1 with valid data creates a user_party" do
+    test "create_user_sub/1 with valid data creates a user_sub" do
       user = create_user()
-      party = create_party()
-      assert {:ok, %UserSub{} = user_party} = Subs.create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
+      sub = create_sub()
+      assert {:ok, %UserSub{} = user_sub} = Subs.create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
     end
 
-    test "create_user_party/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Subs.create_user_party(@invalid_attrs)
+    test "create_user_sub/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Subs.create_user_sub(@invalid_attrs)
     end
 
-    test "update_user_party/2 with valid data updates the user_party" do
+    test "update_user_sub/2 with valid data updates the user_sub" do
       user = create_user()
-      party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
-      assert {:ok, user_party} = Subs.update_user_party(user_party, @update_attrs)
-      assert %UserSub{} = user_party
+      sub = create_sub()
+      user_sub = create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
+      assert {:ok, user_sub} = Subs.update_user_sub(user_sub, @update_attrs)
+      assert %UserSub{} = user_sub
     end
 
-    test "update_user_party/2 with invalid data returns error changeset" do
+    test "update_user_sub/2 with invalid data returns error changeset" do
       user = create_user()
-      party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
-      assert {:error, %Ecto.Changeset{}} = Subs.update_user_party(user_party, @invalid_attrs)
-      assert user_party == Subs.get_user_party!(user_party.id)
+      sub = create_sub()
+      user_sub = create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
+      assert {:error, %Ecto.Changeset{}} = Subs.update_user_sub(user_sub, @invalid_attrs)
+      assert user_sub == Subs.get_user_sub!(user_sub.id)
     end
 
-    test "delete_user_party/1 deletes the user_party" do
+    test "delete_user_sub/1 deletes the user_sub" do
       user = create_user()
-      party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
-      assert {:ok, %UserSub{}} = Subs.delete_user_party(user_party)
-      assert_raise Ecto.NoResultsError, fn -> Subs.get_user_party!(user_party.id) end
+      sub = create_sub()
+      user_sub = create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
+      assert {:ok, %UserSub{}} = Subs.delete_user_sub(user_sub)
+      assert_raise Ecto.NoResultsError, fn -> Subs.get_user_sub!(user_sub.id) end
     end
 
-    test "change_user_party/1 returns a user_party changeset" do
+    test "change_user_sub/1 returns a user_sub changeset" do
       user = create_user()
-      party = create_party()
-      user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
-      assert %Ecto.Changeset{} = Subs.change_user_party(user_party)
+      sub = create_sub()
+      user_sub = create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
+      assert %Ecto.Changeset{} = Subs.change_user_sub(user_sub)
     end
   end
 
-  defp create_party(attrs \\ %{}) do
-    {:ok, party} =
+  defp create_sub(attrs \\ %{}) do
+    {:ok, sub} =
       attrs
       |> Enum.into(%{size: 4})
-      |> Subs.create_party()
+      |> Subs.create_sub()
 
-    party
+    sub
   end
 
   defp create_user(attrs \\ %{}) do
@@ -146,11 +146,11 @@ defmodule SonderApi.SubsTest do
     user
   end
 
-  defp create_user_party(attrs \\ %{}) do
-    {:ok, user_party} =
+  defp create_user_sub(attrs \\ %{}) do
+    {:ok, user_sub} =
       attrs
-      |> Subs.create_user_party()
+      |> Subs.create_user_sub()
 
-    user_party
+    user_sub
   end
 end

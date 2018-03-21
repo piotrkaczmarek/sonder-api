@@ -14,8 +14,8 @@ defmodule SonderApi.Subs.Sub do
   end
 
   @doc false
-  def changeset(%Sub{} = party, attrs) do
-    party
+  def changeset(%Sub{} = sub, attrs) do
+    sub
     |> cast(attrs, [:size, :name, :owner_id])
     |> validate_required([:size, :name, :owner_id])
   end

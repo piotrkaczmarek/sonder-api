@@ -54,7 +54,7 @@ defmodule SonderApiWeb.Router do
     put "/parties/:id/apply", SubController, :apply
     put "/parties/:id/dismiss", SubController, :dismiss
     get "/parties/:id/applicants", SubController, :applicants
-    put "/parties/:party_id/applicants/:user_id/accept", SubController, :accept
-    put "/parties/:party_id/applicants/:user_id/reject", SubController, :reject
+    put "/parties/:sub_id/applicants/:user_id/accept", SubController, :accept
+    put "/parties/:sub_id/applicants/:user_id/reject", SubController, :reject
   end
 end

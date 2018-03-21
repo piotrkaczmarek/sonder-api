@@ -5,18 +5,18 @@ defmodule SonderApiWeb.SubView do
   alias SonderApi.Subs
 
   def render("index.json", %{parties: parties}) do
-    %{data: render_many(parties, SubView, "party.json")}
+    %{data: render_many(parties, SubView, "sub.json")}
   end
 
-  def render("show.json", %{party: party}) do
-    %{data: render_one(party, SubView, "party.json")}
+  def render("show.json", %{sub: sub}) do
+    %{data: render_one(sub, SubView, "sub.json")}
   end
 
-  def render("party.json", %{party: party}) do
-    %{id: party.id,
-      name: party.name,
-      size: party.size,
-      members: render_many(Subs.list_members(party.id), SonderApiWeb.UserView, "user.json")
+  def render("sub.json", %{sub: sub}) do
+    %{id: sub.id,
+      name: sub.name,
+      size: sub.size,
+      members: render_many(Subs.list_members(sub.id), SonderApiWeb.UserView, "user.json")
     }
   end
 

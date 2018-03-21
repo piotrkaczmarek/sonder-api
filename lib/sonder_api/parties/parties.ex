@@ -34,9 +34,9 @@ defmodule SonderApi.Subs do
 
   """
   def list_suggested_parties(user_id) do
-    query = from party in Sub,
-              join: user_party in UserSub, where: user_party.party_id == party.id,
-              where: user_party.user_id == ^user_id and user_party.state == "suggested"
+    query = from sub in Sub,
+              join: user_sub in UserSub, where: user_sub.sub_id == sub.id,
+              where: user_sub.user_id == ^user_id and user_sub.state == "suggested"
     Repo.all(query)
     |> Repo.preload(:users)
   end
@@ -51,15 +51,15 @@ defmodule SonderApi.Subs do
 
   """
   def list_accepted_parties(user_id) do
-    query = from party in Sub,
-              join: user_party in UserSub, where: user_party.party_id == party.id,
-              where: user_party.user_id == ^user_id and user_party.state == "accepted"
+    query = from sub in Sub,
+              join: user_sub in UserSub, where: user_sub.sub_id == sub.id,
+              where: user_sub.user_id == ^user_id and user_sub.state == "accepted"
     Repo.all(query)
     |> Repo.preload(:users)
   end
 
  @doc """
-  Returns the list of people who applied to given party.
+  Returns the list of people who applied to given sub.
 
   ## Examples
 
@@ -67,65 +67,65 @@ defmodule SonderApi.Subs do
       [%User{}, ...]
 
   """
-  def list_applicants(party_id) do
+  def list_applicants(sub_id) do
     query = from user in User,
-              join: user_party in UserSub, where: user_party.user_id == user.id,
-              where: user_party.party_id == ^party_id and user_party.state == "applied"
+              join: user_sub in UserSub, where: user_sub.user_id == user.id,
+              where: user_sub.sub_id == ^sub_id and user_sub.state == "applied"
     Repo.all(query)
   end
 
   @doc """
-  Gets a single party.
+  Gets a single sub.
 
   Raises `Ecto.NoResultsError` if the Sub does not exist.
 
   ## Examples
 
-      iex> get_party!(123)
+      iex> get_sub!(123)
       %Sub{}
 
-      iex> get_party!(456)
+      iex> get_sub!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_party!(id), do: Repo.get!(Sub, id)
+  def get_sub!(id), do: Repo.get!(Sub, id)
 
-  def get_party(%{owner_id: owner_id}) do
-    Repo.one(from party in Sub, where: party.owner_id == ^owner_id)
+  def get_sub(%{owner_id: owner_id}) do
+    Repo.one(from sub in Sub, where: sub.owner_id == ^owner_id)
   end
 
   @doc """
-  Creates a party.
+  Creates a sub.
 
   ## Examples
 
-      iex> create_party(%{field: value})
+      iex> create_sub(%{field: value})
       {:ok, %Sub{}}
 
-      iex> create_party(%{field: bad_value})
+      iex> create_sub(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_party(attrs \\ %{}) do
+  def create_sub(attrs \\ %{}) do
     %Sub{}
     |> Sub.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a party.
+  Updates a sub.
 
   ## Examples
 
-      iex> update_party(party, %{field: new_value})
+      iex> update_sub(sub, %{field: new_value})
       {:ok, %Sub{}}
 
-      iex> update_party(party, %{field: bad_value})
+      iex> update_sub(sub, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_party(%Sub{} = party, attrs) do
-    party
+  def update_sub(%Sub{} = sub, attrs) do
+    sub
     |> Sub.changeset(attrs)
     |> Repo.update()
   end
@@ -135,38 +135,38 @@ defmodule SonderApi.Subs do
 
   ## Examples
 
-      iex> delete_party(party)
+      iex> delete_sub(sub)
       {:ok, %Sub{}}
 
-      iex> delete_party(party)
+      iex> delete_sub(sub)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_party(%Sub{} = party) do
-    Repo.delete(party)
+  def delete_sub(%Sub{} = sub) do
+    Repo.delete(sub)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking party changes.
+  Returns an `%Ecto.Changeset{}` for tracking sub changes.
 
   ## Examples
 
-      iex> change_party(party)
+      iex> change_sub(sub)
       %Ecto.Changeset{source: %Sub{}}
 
   """
-  def change_party(%Sub{} = party) do
-    Sub.changeset(party, %{})
+  def change_sub(%Sub{} = sub) do
+    Sub.changeset(sub, %{})
   end
 
   alias SonderApi.Subs.UserSub
   alias SonderApi.Accounts.User
 
-  def list_members(party_id) do
+  def list_members(sub_id) do
     query = from u in User,
               join: up in UserSub,
               where: up.user_id == u.id
-                       and up.party_id == ^party_id
+                       and up.sub_id == ^sub_id
                        and up.state == "accepted",
               order_by: [asc: up.updated_at]
     Repo.all(query)
@@ -186,84 +186,84 @@ defmodule SonderApi.Subs do
   end
 
   @doc """
-  Gets a single user_party.
+  Gets a single user_sub.
 
-  Raises `Ecto.NoResultsError` if the User party does not exist.
+  Raises `Ecto.NoResultsError` if the User sub does not exist.
 
   ## Examples
 
-      iex> get_user_party!(123)
+      iex> get_user_sub!(123)
       %UserSub{}
 
-      iex> get_user_party!(456)
+      iex> get_user_sub!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_party!(id), do: Repo.get!(UserSub, id)
+  def get_user_sub!(id), do: Repo.get!(UserSub, id)
 
 
   @doc """
-  Gets a single user_party.
+  Gets a single user_sub.
 
-  Returns `nil` if the User party does not exist.
+  Returns `nil` if the User sub does not exist.
 
   ## Examples
 
-      iex> get_user_party!(party_id: 1, user_id: 2)
+      iex> get_user_sub!(sub_id: 1, user_id: 2)
       %UserSub{}
 
-      iex> get_user_party!(456)
+      iex> get_user_sub!(456)
       nil
 
   """
-  def get_user_party(%{party_id: party_id, user_id: user_id}) do
-    Repo.one(from up in UserSub, where: up.user_id == ^user_id and up.party_id == ^party_id)
+  def get_user_sub(%{sub_id: sub_id, user_id: user_id}) do
+    Repo.one(from up in UserSub, where: up.user_id == ^user_id and up.sub_id == ^sub_id)
   end
 
   @doc """
-  Creates a user_party.
+  Creates a user_sub.
 
   ## Examples
 
-      iex> create_user_party(%{field: value})
+      iex> create_user_sub(%{field: value})
       {:ok, %UserSub{}}
 
-      iex> create_user_party(%{field: bad_value})
+      iex> create_user_sub(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user_party(attrs \\ %{}) do
+  def create_user_sub(attrs \\ %{}) do
     %UserSub{}
     |> UserSub.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a user_party.
+  Updates a user_sub.
 
   ## Examples
 
-      iex> update_user_party(user_party, %{field: new_value})
+      iex> update_user_sub(user_sub, %{field: new_value})
       {:ok, %UserSub{}}
 
-      iex> update_user_party(user_party, %{field: bad_value})
+      iex> update_user_sub(user_sub, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user_party(%UserSub{} = user_party, attrs) do
-    user_party
+  def update_user_sub(%UserSub{} = user_sub, attrs) do
+    user_sub
     |> UserSub.changeset(attrs)
     |> Repo.update()
   end
 
 
   @doc """
-  Creates or Updates a user_party.
+  Creates or Updates a user_sub.
   """
-  def upsert_user_party(attrs = %{user_id: user_id, party_id: party_id, state: state}) do
-    case get_user_party(%{user_id: user_id, party_id: party_id}) do
-      %UserSub{} = user_party -> update_user_party(user_party, attrs)
-      nil -> create_user_party(attrs)
+  def upsert_user_sub(attrs = %{user_id: user_id, sub_id: sub_id, state: state}) do
+    case get_user_sub(%{user_id: user_id, sub_id: sub_id}) do
+      %UserSub{} = user_sub -> update_user_sub(user_sub, attrs)
+      nil -> create_user_sub(attrs)
     end
   end
 
@@ -272,27 +272,27 @@ defmodule SonderApi.Subs do
 
   ## Examples
 
-      iex> delete_user_party(user_party)
+      iex> delete_user_sub(user_sub)
       {:ok, %UserSub{}}
 
-      iex> delete_user_party(user_party)
+      iex> delete_user_sub(user_sub)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_user_party(%UserSub{} = user_party) do
-    Repo.delete(user_party)
+  def delete_user_sub(%UserSub{} = user_sub) do
+    Repo.delete(user_sub)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user_party changes.
+  Returns an `%Ecto.Changeset{}` for tracking user_sub changes.
 
   ## Examples
 
-      iex> change_user_party(user_party)
+      iex> change_user_sub(user_sub)
       %Ecto.Changeset{source: %UserSub{}}
 
   """
-  def change_user_party(%UserSub{} = user_party) do
-    UserSub.changeset(user_party, %{})
+  def change_user_sub(%UserSub{} = user_sub) do
+    UserSub.changeset(user_sub, %{})
   end
 end
