@@ -23,12 +23,12 @@ defmodule SonderApiWeb.SubControllerTest do
   describe "index when authorized" do
     setup %{conn: conn}, do: create_user_and_authorize(conn)
 
-    test "returns empty array when there are no parties", %{conn: conn} do
+    test "returns empty array when there are no subs", %{conn: conn} do
       conn = get conn, sub_path(conn, :index)
       assert json_response(conn, 200)["data"] == []
     end
 
-    test "returns all parties with users", %{conn: conn} do
+    test "returns all subs with users", %{conn: conn} do
       sub_1 = create_sub()
       sub_2 = create_sub()
       user_1 = create_user(%{email: "email1@example.com", auth_token: "abc", facebook_id: "123", first_name: "Bob"})
@@ -67,10 +67,10 @@ defmodule SonderApiWeb.SubControllerTest do
     test "creates user_sub with state 'requested'", %{conn: conn} do
       sub = create_sub()
 
-      conn = put(conn, "/api/parties/#{sub.id}/request")
+      conn = put(conn, "/api/subs/#{sub.id}/request")
       assert conn.status, "204"
 
-      [user_sub] = Subs.list_user_parties
+      [user_sub] = Subs.list_user_subs
       assert conn.assigns[:current_user].id == user_sub.user_id
       assert user_sub.state == "requested"
     end
@@ -82,10 +82,10 @@ defmodule SonderApiWeb.SubControllerTest do
     test "creates user_sub with state 'dismissed'", %{conn: conn} do
       sub = create_sub()
 
-      conn = put(conn, "/api/parties/#{sub.id}/dismiss")
+      conn = put(conn, "/api/subs/#{sub.id}/dismiss")
       assert conn.status, "204"
 
-      [user_sub] = Subs.list_user_parties
+      [user_sub] = Subs.list_user_subs
       assert conn.assigns[:current_user].id == user_sub.user_id
       assert user_sub.state == "dismissed"
     end

@@ -8,13 +8,13 @@ defmodule SonderApiWeb.SubController do
   action_fallback SonderApiWeb.FallbackController
 
   def suggested(conn, _params) do
-    parties = Subs.list_suggested_parties(conn.assigns[:current_user].id)
-    render(conn, "index.json", parties: parties)
+    subs = Subs.list_suggested_subs(conn.assigns[:current_user].id)
+    render(conn, "index.json", subs: subs)
   end
 
   def accepted(conn, _params) do
-    parties = Subs.list_accepted_parties(conn.assigns[:current_user].id)
-    render(conn, "index.json", parties: parties)
+    subs = Subs.list_accepted_subs(conn.assigns[:current_user].id)
+    render(conn, "index.json", subs: subs)
   end
 
   def applicants(conn, %{"id" => sub_id}) do

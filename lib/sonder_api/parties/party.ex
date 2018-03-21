@@ -4,12 +4,12 @@ defmodule SonderApi.Subs.Sub do
   alias SonderApi.Subs.Sub
 
 
-  schema "parties" do
+  schema "subs" do
     field :size, :integer
     field :name, :string
     field :owner_id, :id
 
-    many_to_many :users, SonderApi.Accounts.User, join_through: "user_parties"
+    many_to_many :users, SonderApi.Accounts.User, join_through: "user_subs"
     timestamps()
   end
 

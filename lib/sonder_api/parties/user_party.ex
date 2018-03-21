@@ -9,7 +9,7 @@ defmodule SonderApi.Subs.UserSub do
   alias SonderApi.Subs.UserSub
 
 
-  schema "user_parties" do
+  schema "user_subs" do
     field :user_id, :id
     field :sub_id, :id
     field :state, SonderApi.Subs.State
@@ -22,6 +22,6 @@ defmodule SonderApi.Subs.UserSub do
     user_sub
     |> cast(attrs, [:user_id, :sub_id, :state])
     |> validate_required([:user_id, :sub_id, :state])
-    |> unique_constraint(:sub_id, [name: :index_user_parties_uniqueness])
+    |> unique_constraint(:sub_id, [name: :index_user_subs_uniqueness])
   end
 end

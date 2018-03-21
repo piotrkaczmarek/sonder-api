@@ -3,16 +3,16 @@ defmodule SonderApi.SubsTest do
 
   alias SonderApi.Subs
 
-  describe "parties" do
+  describe "subs" do
     alias SonderApi.Subs.Sub
 
     @valid_attrs %{size: 42}
     @update_attrs %{size: 43}
     @invalid_attrs %{size: nil}
 
-    test "list_parties/0 returns all parties" do
+    test "list_subs/0 returns all subs" do
       sub = create_sub() |> Repo.preload(:users)
-      assert Subs.list_parties() == [sub]
+      assert Subs.list_subs() == [sub]
     end
 
     test "get_sub!/1 returns the sub with given id" do
@@ -54,18 +54,18 @@ defmodule SonderApi.SubsTest do
     end
   end
 
-  describe "user_parties" do
+  describe "user_subs" do
     alias SonderApi.Subs.UserSub
 
     @valid_attrs %{user_id: 1, sub_id: 1}
     @update_attrs %{}
     @invalid_attrs %{user_id: nil}
 
-    test "list_user_parties/0 returns all user_parties" do
+    test "list_user_subs/0 returns all user_subs" do
       user = create_user()
       sub = create_sub()
       user_sub = create_user_sub(%{user_id: user.id, sub_id: sub.id, state: "accepted"})
-      assert Subs.list_user_parties() == [user_sub]
+      assert Subs.list_user_subs() == [user_sub]
     end
 
     test "list_members/1 returns only accepted users" do

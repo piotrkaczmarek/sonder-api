@@ -11,29 +11,29 @@ defmodule SonderApi.Subs do
   alias SonderApi.Subs.UserSub
 
   @doc """
-  Returns the list of parties.
+  Returns the list of subs.
 
   ## Examples
 
-      iex> list_parties()
+      iex> list_subs()
       [%Sub{}, ...]
 
   """
-  def list_parties do
+  def list_subs do
     Repo.all(Sub)
     |> Repo.preload(:users)
   end
 
   @doc """
-  Returns the list of parties that are suggested to given user.
+  Returns the list of subs that are suggested to given user.
 
   ## Examples
 
-      iex> list_suggested_parties(5)
+      iex> list_suggested_subs(5)
       [%Sub{}, ...]
 
   """
-  def list_suggested_parties(user_id) do
+  def list_suggested_subs(user_id) do
     query = from sub in Sub,
               join: user_sub in UserSub, where: user_sub.sub_id == sub.id,
               where: user_sub.user_id == ^user_id and user_sub.state == "suggested"
@@ -42,15 +42,15 @@ defmodule SonderApi.Subs do
   end
 
   @doc """
-  Returns the list of parties that accepted given user.
+  Returns the list of subs that accepted given user.
 
   ## Examples
 
-      iex> list_accepted_parties(5)
+      iex> list_accepted_subs(5)
       [%Sub{}, ...]
 
   """
-  def list_accepted_parties(user_id) do
+  def list_accepted_subs(user_id) do
     query = from sub in Sub,
               join: user_sub in UserSub, where: user_sub.sub_id == sub.id,
               where: user_sub.user_id == ^user_id and user_sub.state == "accepted"
@@ -173,15 +173,15 @@ defmodule SonderApi.Subs do
   end
 
   @doc """
-  Returns the list of user_parties.
+  Returns the list of user_subs.
 
   ## Examples
 
-      iex> list_user_parties()
+      iex> list_user_subs()
       [%UserSub{}, ...]
 
   """
-  def list_user_parties do
+  def list_user_subs do
     Repo.all(UserSub)
   end
 
