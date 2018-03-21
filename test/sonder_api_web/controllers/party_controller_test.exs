@@ -1,8 +1,8 @@
-defmodule SonderApiWeb.PartyControllerTest do
+defmodule SonderApiWeb.SubControllerTest do
   use SonderApiWeb.ConnCase
 
   alias SonderApi.Subs
-  alias SonderApi.Subs.Party
+  alias SonderApi.Subs.Sub
   alias SonderApi.Accounts
 
   @create_attrs %{size: 42}
@@ -110,7 +110,7 @@ defmodule SonderApiWeb.PartyControllerTest do
   # describe "update party" do
   #   setup [:create_party]
 
-  #   test "renders party when data is valid", %{conn: conn, party: %Party{id: id} = party} do
+  #   test "renders party when data is valid", %{conn: conn, party: %Sub{id: id} = party} do
   #     conn = put conn, party_path(conn, :update, party), party: @update_attrs
   #     assert %{"id" => ^id} = json_response(conn, 200)["data"]
 

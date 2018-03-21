@@ -1,9 +1,9 @@
-defmodule SonderApiWeb.PartyController do
+defmodule SonderApiWeb.SubController do
   use SonderApiWeb, :controller
 
   alias SonderApi.Subs
-  alias SonderApi.Subs.Party
-  alias SonderApi.Subs.UserParty
+  alias SonderApi.Subs.Sub
+  alias SonderApi.Subs.UserSub
 
   action_fallback SonderApiWeb.FallbackController
 
@@ -28,8 +28,8 @@ defmodule SonderApiWeb.PartyController do
 
   def create(conn, %{"party" => party_params}) do
     with current_user_id <- conn.assigns[:current_user].id,
-         {:ok, %Party{} = party} <- Subs.create_party(Map.merge(party_params, %{"owner_id" => current_user_id})),
-         {:ok, %UserParty{}} <- Subs.upsert_user_party(%{user_id: current_user_id,
+         {:ok, %Sub{} = party} <- Subs.create_party(Map.merge(party_params, %{"owner_id" => current_user_id})),
+         {:ok, %UserSub{}} <- Subs.upsert_user_party(%{user_id: current_user_id,
                                                             party_id: party.id,
                                                             state: "accepted"})
     do
@@ -40,7 +40,7 @@ defmodule SonderApiWeb.PartyController do
   end
 
   def apply(conn, %{"id" => party_id}) do
-    with {:ok, %UserParty{}} <- Subs.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
+    with {:ok, %UserSub{}} <- Subs.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
                                                             party_id: party_id,
                                                             state: "applied"})
     do
@@ -49,7 +49,7 @@ defmodule SonderApiWeb.PartyController do
   end
 
   def dismiss(conn, %{"id" => party_id}) do
-    with {:ok, %UserParty{}} <- Subs.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
+    with {:ok, %UserSub{}} <- Subs.upsert_user_party(%{user_id: conn.assigns[:current_user].id,
                                                             party_id: party_id,
                                                             state: "dismissed"})
     do
@@ -58,8 +58,8 @@ defmodule SonderApiWeb.PartyController do
   end
 
   def accept(conn, %{"party_id" => party_id, "user_id" => user_id}) do
-    with %Party{} = party <- Subs.get_party(%{owner_id: conn.assigns[:current_user].id}),
-         {:ok, %UserParty{}} <- Subs.upsert_user_party(%{user_id: user_id,
+    with %Sub{} = party <- Subs.get_party(%{owner_id: conn.assigns[:current_user].id}),
+         {:ok, %UserSub{}} <- Subs.upsert_user_party(%{user_id: user_id,
                                                             party_id: party_id,
                                                             state: "accepted"})
     do
@@ -68,8 +68,8 @@ defmodule SonderApiWeb.PartyController do
   end
 
   def reject(conn, %{"party_id" => party_id, "user_id" => user_id}) do
-    with %Party{} = party <- Subs.get_party(%{owner_id: conn.assigns[:current_user].id}),
-         {:ok, %UserParty{}} <- Subs.upsert_user_party(%{user_id: user_id,
+    with %Sub{} = party <- Subs.get_party(%{owner_id: conn.assigns[:current_user].id}),
+         {:ok, %UserSub{}} <- Subs.upsert_user_party(%{user_id: user_id,
                                                             party_id: party_id,
                                                             state: "rejected"})
     do
@@ -85,14 +85,14 @@ defmodule SonderApiWeb.PartyController do
   # def update(conn, %{"id" => id, "party" => party_params}) do
   #   party = Subs.get_party!(id)
 
-  #   with {:ok, %Party{} = party} <- Subs.update_party(party, party_params) do
+  #   with {:ok, %Sub{} = party} <- Subs.update_party(party, party_params) do
   #     render(conn, "show.json", party: party)
   #   end
   # end
 
   # def delete(conn, %{"id" => id}) do
   #   party = Subs.get_party!(id)
-  #   with {:ok, %Party{}} <- Subs.delete_party(party) do
+  #   with {:ok, %Sub{}} <- Subs.delete_party(party) do
   #     send_resp(conn, :no_content, "")
   #   end
   # end

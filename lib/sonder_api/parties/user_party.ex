@@ -3,10 +3,10 @@ defmodule SonderApi.Subs.State do
     values: ["suggested", "applied", "dismissed", "accepted", "rejected"]
 end
 
-defmodule SonderApi.Subs.UserParty do
+defmodule SonderApi.Subs.UserSub do
   use Ecto.Schema
   import Ecto.Changeset
-  alias SonderApi.Subs.UserParty
+  alias SonderApi.Subs.UserSub
 
 
   schema "user_parties" do
@@ -18,7 +18,7 @@ defmodule SonderApi.Subs.UserParty do
   end
 
   @doc false
-  def changeset(%UserParty{} = user_party, attrs) do
+  def changeset(%UserSub{} = user_party, attrs) do
     user_party
     |> cast(attrs, [:user_id, :party_id, :state])
     |> validate_required([:user_id, :party_id, :state])

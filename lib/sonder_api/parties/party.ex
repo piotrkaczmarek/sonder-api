@@ -1,7 +1,7 @@
-defmodule SonderApi.Subs.Party do
+defmodule SonderApi.Subs.Sub do
   use Ecto.Schema
   import Ecto.Changeset
-  alias SonderApi.Subs.Party
+  alias SonderApi.Subs.Sub
 
 
   schema "parties" do
@@ -14,7 +14,7 @@ defmodule SonderApi.Subs.Party do
   end
 
   @doc false
-  def changeset(%Party{} = party, attrs) do
+  def changeset(%Sub{} = party, attrs) do
     party
     |> cast(attrs, [:size, :name, :owner_id])
     |> validate_required([:size, :name, :owner_id])

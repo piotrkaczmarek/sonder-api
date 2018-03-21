@@ -1,4 +1,4 @@
-defmodule SonderApi.Repo.Migrations.AddUniquenessIndexToUserParty do
+defmodule SonderApi.Repo.Migrations.AddUniquenessIndexToUserSub do
   use Ecto.Migration
 
   def change do

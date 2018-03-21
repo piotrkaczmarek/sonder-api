@@ -6,9 +6,9 @@ defmodule SonderApi.Subs do
   import Ecto.Query, warn: false
   alias SonderApi.Repo
 
-  alias SonderApi.Subs.Party
+  alias SonderApi.Subs.Sub
   alias SonderApi.Accounts.User
-  alias SonderApi.Subs.UserParty
+  alias SonderApi.Subs.UserSub
 
   @doc """
   Returns the list of parties.
@@ -16,11 +16,11 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> list_parties()
-      [%Party{}, ...]
+      [%Sub{}, ...]
 
   """
   def list_parties do
-    Repo.all(Party)
+    Repo.all(Sub)
     |> Repo.preload(:users)
   end
 
@@ -30,12 +30,12 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> list_suggested_parties(5)
-      [%Party{}, ...]
+      [%Sub{}, ...]
 
   """
   def list_suggested_parties(user_id) do
-    query = from party in Party,
-              join: user_party in UserParty, where: user_party.party_id == party.id,
+    query = from party in Sub,
+              join: user_party in UserSub, where: user_party.party_id == party.id,
               where: user_party.user_id == ^user_id and user_party.state == "suggested"
     Repo.all(query)
     |> Repo.preload(:users)
@@ -47,12 +47,12 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> list_accepted_parties(5)
-      [%Party{}, ...]
+      [%Sub{}, ...]
 
   """
   def list_accepted_parties(user_id) do
-    query = from party in Party,
-              join: user_party in UserParty, where: user_party.party_id == party.id,
+    query = from party in Sub,
+              join: user_party in UserSub, where: user_party.party_id == party.id,
               where: user_party.user_id == ^user_id and user_party.state == "accepted"
     Repo.all(query)
     |> Repo.preload(:users)
@@ -69,7 +69,7 @@ defmodule SonderApi.Subs do
   """
   def list_applicants(party_id) do
     query = from user in User,
-              join: user_party in UserParty, where: user_party.user_id == user.id,
+              join: user_party in UserSub, where: user_party.user_id == user.id,
               where: user_party.party_id == ^party_id and user_party.state == "applied"
     Repo.all(query)
   end
@@ -77,21 +77,21 @@ defmodule SonderApi.Subs do
   @doc """
   Gets a single party.
 
-  Raises `Ecto.NoResultsError` if the Party does not exist.
+  Raises `Ecto.NoResultsError` if the Sub does not exist.
 
   ## Examples
 
       iex> get_party!(123)
-      %Party{}
+      %Sub{}
 
       iex> get_party!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_party!(id), do: Repo.get!(Party, id)
+  def get_party!(id), do: Repo.get!(Sub, id)
 
   def get_party(%{owner_id: owner_id}) do
-    Repo.one(from party in Party, where: party.owner_id == ^owner_id)
+    Repo.one(from party in Sub, where: party.owner_id == ^owner_id)
   end
 
   @doc """
@@ -100,15 +100,15 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> create_party(%{field: value})
-      {:ok, %Party{}}
+      {:ok, %Sub{}}
 
       iex> create_party(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
   def create_party(attrs \\ %{}) do
-    %Party{}
-    |> Party.changeset(attrs)
+    %Sub{}
+    |> Sub.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -118,31 +118,31 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> update_party(party, %{field: new_value})
-      {:ok, %Party{}}
+      {:ok, %Sub{}}
 
       iex> update_party(party, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_party(%Party{} = party, attrs) do
+  def update_party(%Sub{} = party, attrs) do
     party
-    |> Party.changeset(attrs)
+    |> Sub.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Party.
+  Deletes a Sub.
 
   ## Examples
 
       iex> delete_party(party)
-      {:ok, %Party{}}
+      {:ok, %Sub{}}
 
       iex> delete_party(party)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_party(%Party{} = party) do
+  def delete_party(%Sub{} = party) do
     Repo.delete(party)
   end
 
@@ -152,19 +152,19 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> change_party(party)
-      %Ecto.Changeset{source: %Party{}}
+      %Ecto.Changeset{source: %Sub{}}
 
   """
-  def change_party(%Party{} = party) do
-    Party.changeset(party, %{})
+  def change_party(%Sub{} = party) do
+    Sub.changeset(party, %{})
   end
 
-  alias SonderApi.Subs.UserParty
+  alias SonderApi.Subs.UserSub
   alias SonderApi.Accounts.User
 
   def list_members(party_id) do
     query = from u in User,
-              join: up in UserParty,
+              join: up in UserSub,
               where: up.user_id == u.id
                        and up.party_id == ^party_id
                        and up.state == "accepted",
@@ -178,11 +178,11 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> list_user_parties()
-      [%UserParty{}, ...]
+      [%UserSub{}, ...]
 
   """
   def list_user_parties do
-    Repo.all(UserParty)
+    Repo.all(UserSub)
   end
 
   @doc """
@@ -193,13 +193,13 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> get_user_party!(123)
-      %UserParty{}
+      %UserSub{}
 
       iex> get_user_party!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_party!(id), do: Repo.get!(UserParty, id)
+  def get_user_party!(id), do: Repo.get!(UserSub, id)
 
 
   @doc """
@@ -210,14 +210,14 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> get_user_party!(party_id: 1, user_id: 2)
-      %UserParty{}
+      %UserSub{}
 
       iex> get_user_party!(456)
       nil
 
   """
   def get_user_party(%{party_id: party_id, user_id: user_id}) do
-    Repo.one(from up in UserParty, where: up.user_id == ^user_id and up.party_id == ^party_id)
+    Repo.one(from up in UserSub, where: up.user_id == ^user_id and up.party_id == ^party_id)
   end
 
   @doc """
@@ -226,15 +226,15 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> create_user_party(%{field: value})
-      {:ok, %UserParty{}}
+      {:ok, %UserSub{}}
 
       iex> create_user_party(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
   def create_user_party(attrs \\ %{}) do
-    %UserParty{}
-    |> UserParty.changeset(attrs)
+    %UserSub{}
+    |> UserSub.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -244,15 +244,15 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> update_user_party(user_party, %{field: new_value})
-      {:ok, %UserParty{}}
+      {:ok, %UserSub{}}
 
       iex> update_user_party(user_party, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user_party(%UserParty{} = user_party, attrs) do
+  def update_user_party(%UserSub{} = user_party, attrs) do
     user_party
-    |> UserParty.changeset(attrs)
+    |> UserSub.changeset(attrs)
     |> Repo.update()
   end
 
@@ -262,24 +262,24 @@ defmodule SonderApi.Subs do
   """
   def upsert_user_party(attrs = %{user_id: user_id, party_id: party_id, state: state}) do
     case get_user_party(%{user_id: user_id, party_id: party_id}) do
-      %UserParty{} = user_party -> update_user_party(user_party, attrs)
+      %UserSub{} = user_party -> update_user_party(user_party, attrs)
       nil -> create_user_party(attrs)
     end
   end
 
   @doc """
-  Deletes a UserParty.
+  Deletes a UserSub.
 
   ## Examples
 
       iex> delete_user_party(user_party)
-      {:ok, %UserParty{}}
+      {:ok, %UserSub{}}
 
       iex> delete_user_party(user_party)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_user_party(%UserParty{} = user_party) do
+  def delete_user_party(%UserSub{} = user_party) do
     Repo.delete(user_party)
   end
 
@@ -289,10 +289,10 @@ defmodule SonderApi.Subs do
   ## Examples
 
       iex> change_user_party(user_party)
-      %Ecto.Changeset{source: %UserParty{}}
+      %Ecto.Changeset{source: %UserSub{}}
 
   """
-  def change_user_party(%UserParty{} = user_party) do
-    UserParty.changeset(user_party, %{})
+  def change_user_party(%UserSub{} = user_party) do
+    UserSub.changeset(user_party, %{})
   end
 end

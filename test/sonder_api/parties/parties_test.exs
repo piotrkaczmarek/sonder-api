@@ -4,7 +4,7 @@ defmodule SonderApi.SubsTest do
   alias SonderApi.Subs
 
   describe "parties" do
-    alias SonderApi.Subs.Party
+    alias SonderApi.Subs.Sub
 
     @valid_attrs %{size: 42}
     @update_attrs %{size: 43}
@@ -21,7 +21,7 @@ defmodule SonderApi.SubsTest do
     end
 
     test "create_party/1 with valid data creates a party" do
-      assert {:ok, %Party{} = party} = Subs.create_party(@valid_attrs)
+      assert {:ok, %Sub{} = party} = Subs.create_party(@valid_attrs)
       assert party.size == 42
     end
 
@@ -32,7 +32,7 @@ defmodule SonderApi.SubsTest do
     test "update_party/2 with valid data updates the party" do
       party = create_party()
       assert {:ok, party} = Subs.update_party(party, @update_attrs)
-      assert %Party{} = party
+      assert %Sub{} = party
       assert party.size == 43
     end
 
@@ -44,7 +44,7 @@ defmodule SonderApi.SubsTest do
 
     test "delete_party/1 deletes the party" do
       party = create_party()
-      assert {:ok, %Party{}} = Subs.delete_party(party)
+      assert {:ok, %Sub{}} = Subs.delete_party(party)
       assert_raise Ecto.NoResultsError, fn -> Subs.get_party!(party.id) end
     end
 
@@ -55,7 +55,7 @@ defmodule SonderApi.SubsTest do
   end
 
   describe "user_parties" do
-    alias SonderApi.Subs.UserParty
+    alias SonderApi.Subs.UserSub
 
     @valid_attrs %{user_id: 1, party_id: 1}
     @update_attrs %{}
@@ -89,7 +89,7 @@ defmodule SonderApi.SubsTest do
     test "create_user_party/1 with valid data creates a user_party" do
       user = create_user()
       party = create_party()
-      assert {:ok, %UserParty{} = user_party} = Subs.create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
+      assert {:ok, %UserSub{} = user_party} = Subs.create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
     end
 
     test "create_user_party/1 with invalid data returns error changeset" do
@@ -101,7 +101,7 @@ defmodule SonderApi.SubsTest do
       party = create_party()
       user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
       assert {:ok, user_party} = Subs.update_user_party(user_party, @update_attrs)
-      assert %UserParty{} = user_party
+      assert %UserSub{} = user_party
     end
 
     test "update_user_party/2 with invalid data returns error changeset" do
@@ -116,7 +116,7 @@ defmodule SonderApi.SubsTest do
       user = create_user()
       party = create_party()
       user_party = create_user_party(%{user_id: user.id, party_id: party.id, state: "accepted"})
-      assert {:ok, %UserParty{}} = Subs.delete_user_party(user_party)
+      assert {:ok, %UserSub{}} = Subs.delete_user_party(user_party)
       assert_raise Ecto.NoResultsError, fn -> Subs.get_user_party!(user_party.id) end
     end
 
