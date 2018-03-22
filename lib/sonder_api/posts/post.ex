@@ -5,7 +5,7 @@ defmodule SonderApi.Posts.Post do
 
 
   schema "posts" do
-    field :user_id, :id
+    field :author_id, :id
     field :sub_id, :id
     field :body, :string
 
@@ -15,7 +15,7 @@ defmodule SonderApi.Posts.Post do
   @doc false
   def changeset(%Post{} = post, attrs) do
     post
-    |> cast(attrs, [:body])
-    |> validate_required([:body])
+    |> cast(attrs, [:body, :sub_id, :author_id])
+    |> validate_required([:body, :sub_id, :author_id])
   end
 end

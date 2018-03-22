@@ -17,7 +17,7 @@ defmodule SonderApiWeb.SubController do
     render(conn, "index.json", subs: subs)
   end
 
-  def applicants(conn, %{"id" => sub_id}) do
+  def applicants(conn, %{"sub_id" => sub_id}) do
     with sub <- Subs.get_user_sub(%{user_id: conn.assigns[:current_user].id, sub_id: sub_id}),
         "accepted" <- sub.state,
         applicants <- Subs.list_applicants(sub_id)
@@ -39,7 +39,7 @@ defmodule SonderApiWeb.SubController do
     end
   end
 
-  def apply(conn, %{"id" => sub_id}) do
+  def apply(conn, %{"sub_id" => sub_id}) do
     with {:ok, %UserSub{}} <- Subs.upsert_user_sub(%{user_id: conn.assigns[:current_user].id,
                                                             sub_id: sub_id,
                                                             state: "applied"})
@@ -48,7 +48,7 @@ defmodule SonderApiWeb.SubController do
     end
   end
 
-  def dismiss(conn, %{"id" => sub_id}) do
+  def dismiss(conn, %{"sub_id" => sub_id}) do
     with {:ok, %UserSub{}} <- Subs.upsert_user_sub(%{user_id: conn.assigns[:current_user].id,
                                                             sub_id: sub_id,
                                                             state: "dismissed"})

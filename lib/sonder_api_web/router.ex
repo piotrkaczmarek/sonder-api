@@ -51,12 +51,13 @@ defmodule SonderApiWeb.Router do
     resources "/subs", SubController, only: [:create]
     get "/subs/suggested", SubController, :suggested
     get "/subs/accepted", SubController, :accepted
-    put "/subs/:id/apply", SubController, :apply
-    put "/subs/:id/dismiss", SubController, :dismiss
-    get "/subs/:id/applicants", SubController, :applicants
+    put "/subs/:sub_id/apply", SubController, :apply
+    put "/subs/:sub_id/dismiss", SubController, :dismiss
+    get "/subs/:sub_id/applicants", SubController, :applicants
     put "/subs/:sub_id/applicants/:user_id/accept", SubController, :accept
     put "/subs/:sub_id/applicants/:user_id/reject", SubController, :reject
 
-    get "/subs/:id/posts", PostController, :index
+    get "/subs/:sub_id/posts", PostController, :index
+    post "/subs/:sub_id/posts", PostController, :create
   end
 end
