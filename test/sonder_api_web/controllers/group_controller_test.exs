@@ -1,17 +1,17 @@
-defmodule SonderApiWeb.SubControllerTest do
+defmodule SonderApiWeb.GroupControllerTest do
   use SonderApiWeb.ConnCase
 
-  alias SonderApi.Subs
-  alias SonderApi.Subs.Sub
+  alias SonderApi.Groups
+  alias SonderApi.Groups.Group
   alias SonderApi.Accounts
 
   @create_attrs %{size: 42}
   @update_attrs %{size: 43}
   @invalid_attrs %{size: nil}
 
-  def fixture(:sub) do
-    {:ok, sub} = Subs.create_sub(@create_attrs)
-    sub
+  def fixture(:group) do
+    {:ok, group} = Groups.create_group(@create_attrs)
+    group
   end
 
   def fixture(:user) do
@@ -23,29 +23,29 @@ defmodule SonderApiWeb.SubControllerTest do
   describe "index when authorized" do
     setup %{conn: conn}, do: create_user_and_authorize(conn)
 
-    test "returns empty array when there are no subs", %{conn: conn} do
-      conn = get conn, sub_path(conn, :index)
+    test "returns empty array when there are no groups", %{conn: conn} do
+      conn = get conn, group_path(conn, :index)
       assert json_response(conn, 200)["data"] == []
     end
 
-    test "returns all subs with users", %{conn: conn} do
-      sub_1 = create_sub()
-      sub_2 = create_sub()
+    test "returns all groups with users", %{conn: conn} do
+      group_1 = create_group()
+      group_2 = create_group()
       user_1 = create_user(%{email: "email1@example.com", auth_token: "abc", facebook_id: "123", first_name: "Bob"})
       user_2 = create_user(%{email: "email2@example.com", auth_token: "bcd", facebook_id: "234", first_name: "Susan"})
 
-      create_user_sub(%{user_id: user_1.id, sub_id: sub_1.id, state: "accepted"})
-      create_user_sub(%{user_id: user_1.id, sub_id: sub_2.id, state: "accepted"})
-      create_user_sub(%{user_id: user_2.id, sub_id: sub_1.id, state: "accepted"})
+      create_user_group(%{user_id: user_1.id, group_id: group_1.id, state: "accepted"})
+      create_user_group(%{user_id: user_1.id, group_id: group_2.id, state: "accepted"})
+      create_user_group(%{user_id: user_2.id, group_id: group_1.id, state: "accepted"})
 
-      conn = get conn, sub_path(conn, :index)
+      conn = get conn, group_path(conn, :index)
 
       expected_response = [
-        %{"id" => sub_1.id,
-          "size" => sub_1.size,
+        %{"id" => group_1.id,
+          "size" => group_1.size,
           "members" => [%{"id" => user_1.id, "first_name" => user_1.first_name}, %{"id" => user_2.id, "first_name" => user_2.first_name}]},
-        %{"id" => sub_2.id,
-          "size" => sub_2.size,
+        %{"id" => group_2.id,
+          "size" => group_2.size,
           "members" => [%{"id" => user_1.id, "first_name" => user_1.first_name}]}
       ]
 
@@ -55,7 +55,7 @@ defmodule SonderApiWeb.SubControllerTest do
 
   describe "index when not authorized" do
     test "returns 401", %{conn: conn} do
-      conn = get conn, sub_path(conn, :index)
+      conn = get conn, group_path(conn, :index)
 
       assert json_response(conn, 401)["error"] == "Unauthorized"
     end
@@ -64,87 +64,87 @@ defmodule SonderApiWeb.SubControllerTest do
   describe "request" do
     setup %{conn: conn}, do: create_user_and_authorize(conn)
 
-    test "creates user_sub with state 'requested'", %{conn: conn} do
-      sub = create_sub()
+    test "creates user_group with state 'requested'", %{conn: conn} do
+      group = create_group()
 
-      conn = put(conn, "/api/subs/#{sub.id}/request")
+      conn = put(conn, "/api/groups/#{group.id}/request")
       assert conn.status, "204"
 
-      [user_sub] = Subs.list_user_subs
-      assert conn.assigns[:current_user].id == user_sub.user_id
-      assert user_sub.state == "requested"
+      [user_group] = Groups.list_user_groups
+      assert conn.assigns[:current_user].id == user_group.user_id
+      assert user_group.state == "requested"
     end
   end
 
   describe "dismiss" do
     setup %{conn: conn}, do: create_user_and_authorize(conn)
 
-    test "creates user_sub with state 'dismissed'", %{conn: conn} do
-      sub = create_sub()
+    test "creates user_group with state 'dismissed'", %{conn: conn} do
+      group = create_group()
 
-      conn = put(conn, "/api/subs/#{sub.id}/dismiss")
+      conn = put(conn, "/api/groups/#{group.id}/dismiss")
       assert conn.status, "204"
 
-      [user_sub] = Subs.list_user_subs
-      assert conn.assigns[:current_user].id == user_sub.user_id
-      assert user_sub.state == "dismissed"
+      [user_group] = Groups.list_user_groups
+      assert conn.assigns[:current_user].id == user_group.user_id
+      assert user_group.state == "dismissed"
     end
   end
-  # describe "create sub" do
-  #   test "renders sub when data is valid", %{conn: conn} do
-  #     conn = post conn, sub_path(conn, :create), sub: @create_attrs
+  # describe "create group" do
+  #   test "renders group when data is valid", %{conn: conn} do
+  #     conn = post conn, group_path(conn, :create), group: @create_attrs
   #     assert %{"id" => id} = json_response(conn, 201)["data"]
 
-  #     conn = get conn, sub_path(conn, :show, id)
+  #     conn = get conn, group_path(conn, :show, id)
   #     assert json_response(conn, 200)["data"] == %{
   #       "id" => id,
   #       "size" => 42}
   #   end
 
   #   test "renders errors when data is invalid", %{conn: conn} do
-  #     conn = post conn, sub_path(conn, :create), sub: @invalid_attrs
+  #     conn = post conn, group_path(conn, :create), group: @invalid_attrs
   #     assert json_response(conn, 422)["errors"] != %{}
   #   end
   # end
 
-  # describe "update sub" do
-  #   setup [:create_sub]
+  # describe "update group" do
+  #   setup [:create_group]
 
-  #   test "renders sub when data is valid", %{conn: conn, sub: %Sub{id: id} = sub} do
-  #     conn = put conn, sub_path(conn, :update, sub), sub: @update_attrs
+  #   test "renders group when data is valid", %{conn: conn, group: %Group{id: id} = group} do
+  #     conn = put conn, group_path(conn, :update, group), group: @update_attrs
   #     assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-  #     conn = get conn, sub_path(conn, :show, id)
+  #     conn = get conn, group_path(conn, :show, id)
   #     assert json_response(conn, 200)["data"] == %{
   #       "id" => id,
   #       "size" => 43}
   #   end
 
-  #   test "renders errors when data is invalid", %{conn: conn, sub: sub} do
-  #     conn = put conn, sub_path(conn, :update, sub), sub: @invalid_attrs
+  #   test "renders errors when data is invalid", %{conn: conn, group: group} do
+  #     conn = put conn, group_path(conn, :update, group), group: @invalid_attrs
   #     assert json_response(conn, 422)["errors"] != %{}
   #   end
   # end
 
-  # describe "delete sub" do
-  #   setup [:create_sub]
+  # describe "delete group" do
+  #   setup [:create_group]
 
-  #   test "deletes chosen sub", %{conn: conn, sub: sub} do
-  #     conn = delete conn, sub_path(conn, :delete, sub)
+  #   test "deletes chosen group", %{conn: conn, group: group} do
+  #     conn = delete conn, group_path(conn, :delete, group)
   #     assert response(conn, 204)
   #     assert_error_sent 404, fn ->
-  #       get conn, sub_path(conn, :show, sub)
+  #       get conn, group_path(conn, :show, group)
   #     end
   #   end
   # end
 
-  def create_sub(attrs \\ %{}) do
-    {:ok, sub} =
+  def create_group(attrs \\ %{}) do
+    {:ok, group} =
       attrs
       |> Enum.into(%{size: 4})
-      |> Subs.create_sub()
+      |> Groups.create_group()
 
-    sub
+    group
   end
 
   defp create_user(attrs \\ %{}) do
@@ -156,12 +156,12 @@ defmodule SonderApiWeb.SubControllerTest do
     user
   end
 
-  defp create_user_sub(attrs \\ %{}) do
-    {:ok, user_sub} =
+  defp create_user_group(attrs \\ %{}) do
+    {:ok, user_group} =
       attrs
-      |> Subs.create_user_sub()
+      |> Groups.create_user_group()
 
-    user_sub
+    user_group
   end
 
   defp create_user_and_authorize(conn) do

@@ -1,21 +1,21 @@
-defmodule SonderApi.Subs.Sub do
+defmodule SonderApi.Groups.Group do
   use Ecto.Schema
   import Ecto.Changeset
-  alias SonderApi.Subs.Sub
+  alias SonderApi.Groups.Group
 
 
-  schema "subs" do
+  schema "groups" do
     field :size, :integer
     field :name, :string
     field :owner_id, :id
 
-    many_to_many :users, SonderApi.Accounts.User, join_through: "user_subs"
+    many_to_many :users, SonderApi.Accounts.User, join_through: "user_groups"
     timestamps()
   end
 
   @doc false
-  def changeset(%Sub{} = sub, attrs) do
-    sub
+  def changeset(%Group{} = group, attrs) do
+    group
     |> cast(attrs, [:size, :name, :owner_id])
     |> validate_required([:size, :name, :owner_id])
   end

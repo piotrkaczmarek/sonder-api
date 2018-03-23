@@ -1,8 +1,8 @@
-defmodule SonderApi.Repo.Migrations.CreateSubs do
+defmodule SonderApi.Repo.Migrations.CreateGroups do
   use Ecto.Migration
 
   def change do
-    create table(:subs) do
+    create table(:groups) do
       add :size, :integer
 
       timestamps()

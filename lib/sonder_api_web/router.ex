@@ -48,16 +48,16 @@ defmodule SonderApiWeb.Router do
   scope "/api", SonderApiWeb do
     pipe_through [:api, :authenticate_user]
 
-    resources "/subs", SubController, only: [:create]
-    get "/subs/suggested", SubController, :suggested
-    get "/subs/accepted", SubController, :accepted
-    put "/subs/:sub_id/apply", SubController, :apply
-    put "/subs/:sub_id/dismiss", SubController, :dismiss
-    get "/subs/:sub_id/applicants", SubController, :applicants
-    put "/subs/:sub_id/applicants/:user_id/accept", SubController, :accept
-    put "/subs/:sub_id/applicants/:user_id/reject", SubController, :reject
+    resources "/groups", GroupController, only: [:create]
+    get "/groups/suggested", GroupController, :suggested
+    get "/groups/accepted", GroupController, :accepted
+    put "/groups/:group_id/apply", GroupController, :apply
+    put "/groups/:group_id/dismiss", GroupController, :dismiss
+    get "/groups/:group_id/applicants", GroupController, :applicants
+    put "/groups/:group_id/applicants/:user_id/accept", GroupController, :accept
+    put "/groups/:group_id/applicants/:user_id/reject", GroupController, :reject
 
-    get "/subs/:sub_id/posts", PostController, :index
-    post "/subs/:sub_id/posts", PostController, :create
+    get "/groups/:group_id/posts", PostController, :index
+    post "/groups/:group_id/posts", PostController, :create
   end
 end

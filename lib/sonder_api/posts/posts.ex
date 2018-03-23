@@ -23,17 +23,17 @@ defmodule SonderApi.Posts do
   end
 
  @doc """
-  Returns the list of posts posted to given sub.
+  Returns the list of posts posted to given group.
 
   ## Examples
 
-      iex> get_sub_posts(5)
+      iex> get_group_posts(5)
       [%Post{}, ...]
 
   """
-  def get_sub_posts(sub_id) do
+  def get_group_posts(group_id) do
     query = from post in Post,
-              where: post.sub_id == ^sub_id
+              where: post.group_id == ^group_id
     Repo.all(query)
   end
 
