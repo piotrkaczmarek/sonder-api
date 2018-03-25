@@ -18,3 +18,16 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+
+
+## Deployment
+
+### Heroku
+https://hexdocs.pm/phoenix/heroku.html
+````
+heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir.git
+heroku addons:create heroku-postgresql:hobby-dev
+heroku config:set POOL_SIZE=18
+mix phx.gen.secret
+heroku config:set SECRET_KEY_BASE="secret value generated above"
+````
