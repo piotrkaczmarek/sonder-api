@@ -10,7 +10,7 @@ defmodule SonderApiWeb.Router do
   end
 
   pipeline :api do
-    plug CORSPlug, [origin: "http://localhost:4200"]
+    plug CORSPlug, [origin: [System.get_env("UI_HOST"), "http://localhost:4200"]]
     plug :accepts, ["json"]
   end
 

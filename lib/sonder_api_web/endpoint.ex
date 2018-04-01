@@ -37,8 +37,7 @@ defmodule SonderApiWeb.Endpoint do
     store: :cookie,
     key: "_sonder_api_key",
     signing_salt: "TF3Dtxmi"
-
-  plug CORSPlug, [origin: "http://localhost:4200"]
+  plug CORSPlug, [origin: [System.get_env("UI_HOST"), "http://localhost:4200"]]
   plug SonderApiWeb.Router
 
   @doc """
