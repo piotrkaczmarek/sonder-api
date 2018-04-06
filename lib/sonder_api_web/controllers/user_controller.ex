@@ -42,6 +42,15 @@ defmodule SonderApiWeb.UserController do
   #   end
   # end
 
+  def me(conn, %{}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         user <- Accounts.get_user!(current_user_id)
+    do
+      conn
+      |> render("show.json", user: user)
+    end
+  end
+
   def authenticate(conn, %{"access_token" => access_token}) do
     with {:ok, data} <- FacebookClient.fetch_user_data(access_token),
          {:ok, user} <- Accounts.get_or_create_user(data),

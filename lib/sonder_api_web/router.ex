@@ -48,6 +48,8 @@ defmodule SonderApiWeb.Router do
   scope "/api", SonderApiWeb do
     pipe_through [:api, :authenticate_user]
 
+    get "/profiles/me", UserController, :me
+
     resources "/groups", GroupController, only: [:create]
     get "/groups/suggested", GroupController, :suggested
     get "/groups/accepted", GroupController, :accepted
