@@ -90,8 +90,8 @@ defmodule SonderApi.Groups do
   """
   def get_group!(id), do: Repo.get!(Group, id)
 
-  def get_group(%{owner_id: owner_id}) do
-    Repo.one(from group in Group, where: group.owner_id == ^owner_id)
+  def get_group(%{owner_id: owner_id, group_id: group_id}) do
+    Repo.one(from group in Group, where: group.id == ^group_id and group.owner_id == ^owner_id)
   end
 
   @doc """

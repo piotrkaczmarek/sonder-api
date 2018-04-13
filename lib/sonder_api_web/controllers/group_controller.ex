@@ -58,7 +58,7 @@ defmodule SonderApiWeb.GroupController do
   end
 
   def accept(conn, %{"group_id" => group_id, "user_id" => user_id}) do
-    with %Group{} = group <- Groups.get_group(%{owner_id: conn.assigns[:current_user].id}),
+    with %Group{} = group <- Groups.get_group(%{owner_id: conn.assigns[:current_user].id, group_id: group_id}),
          {:ok, %UserGroup{}} <- Groups.upsert_user_group(%{user_id: user_id,
                                                             group_id: group_id,
                                                             state: "accepted"})
@@ -68,7 +68,7 @@ defmodule SonderApiWeb.GroupController do
   end
 
   def reject(conn, %{"group_id" => group_id, "user_id" => user_id}) do
-    with %Group{} = group <- Groups.get_group(%{owner_id: conn.assigns[:current_user].id}),
+    with %Group{} = group <- Groups.get_group(%{owner_id: conn.assigns[:current_user].id, group_id: group_id}),
          {:ok, %UserGroup{}} <- Groups.upsert_user_group(%{user_id: user_id,
                                                             group_id: group_id,
                                                             state: "rejected"})
