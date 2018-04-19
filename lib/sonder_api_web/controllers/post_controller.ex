@@ -13,6 +13,13 @@ defmodule SonderApiWeb.PostController do
     end
   end
 
+  def show(conn, %{"post_id" => post_id}) do
+    with post <- Posts.get_post_with_comments(%{post_id: post_id})
+    do
+      render(conn, "show_with_comments.json", post: post)
+    end
+  end
+
   def create(conn, %{"group_id" => group_id, "post" => post_params}) do
     with current_user_id <- conn.assigns[:current_user].id,
          {:ok, %Post{} = post} <- Posts.create_post(Map.merge(post_params, %{"author_id" => current_user_id, "group_id" => group_id}))

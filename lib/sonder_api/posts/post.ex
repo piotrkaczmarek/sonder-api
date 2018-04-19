@@ -8,6 +8,7 @@ defmodule SonderApi.Posts.Post do
     field :author_id, :id
     field :group_id, :id
     field :body, :string
+    has_many :comments, SonderApi.Posts.Comment
 
     timestamps()
   end

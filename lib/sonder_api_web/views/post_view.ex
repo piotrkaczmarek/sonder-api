@@ -11,9 +11,29 @@ defmodule SonderApiWeb.PostView do
     %{data: render_one(post, PostView, "post.json")}
   end
 
+  def render("show_with_comments.json", %{post: post}) do
+    %{data: render_one(post, PostView, "post_with_comments.json")}
+  end
+
   def render("post.json", %{post: post}) do
     %{id: post.id,
       body: post.body
+    }
+  end
+
+  def render("post_with_comments.json", %{post: post}) do
+    %{id: post.id,
+      body: post.body,
+      author_id: post.author_id,
+      comments: render_many(post.comments, PostView, "comment.json")
+    }
+  end
+
+  def render("comment.json", %{comment: comment}) do
+    %{id: comment.id,
+      body: comment.body,
+      author_id: comment.author_id,
+      parent_ids: comment.parent_ids
     }
   end
 end

@@ -22,6 +22,7 @@ defmodule SonderApi.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import SonderApi.DataCase
+      import SonderApi.Factory
     end
   end
 

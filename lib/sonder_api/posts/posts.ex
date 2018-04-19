@@ -53,10 +53,16 @@ defmodule SonderApi.Posts do
   """
   def get_post!(id), do: Repo.get!(Post, id)
 
-  def get_post(%{owner_id: owner_id}) do
-    Repo.one(from post in Post, where: post.owner_id == ^owner_id)
+  def get_post(%{owner_id: author_id}) do
+    Repo.one(from post in Post, where: post.author_id == ^author_id)
   end
 
+  def get_post_with_comments(%{post_id: post_id}) do
+    Repo.one(from post in Post,
+             left_join: c in assoc(post, :comments),
+             where: post.id == ^post_id,
+             preload: [comments: c])
+  end
   @doc """
   Creates a post.
 
