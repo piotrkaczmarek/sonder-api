@@ -5,9 +5,11 @@ defmodule SonderApi.Posts.Post do
 
 
   schema "posts" do
-    field :author_id, :id
-    field :group_id, :id
+    field :title, :string
     field :body, :string
+
+    belongs_to :group, SonderApi.Groups.Group
+    belongs_to :author, SonderApi.Accounts.User
     has_many :comments, SonderApi.Posts.Comment
 
     timestamps()
@@ -16,7 +18,7 @@ defmodule SonderApi.Posts.Post do
   @doc false
   def changeset(%Post{} = post, attrs) do
     post
-    |> cast(attrs, [:body, :group_id, :author_id])
-    |> validate_required([:body, :group_id, :author_id])
+    |> cast(attrs, [:body, :title, :group_id, :author_id])
+    |> validate_required([:title, :group_id, :author_id])
   end
 end

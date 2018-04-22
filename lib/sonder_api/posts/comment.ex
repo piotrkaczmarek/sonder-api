@@ -5,9 +5,10 @@ defmodule SonderApi.Posts.Comment do
 
 
   schema "comments" do
-    field :author_id, :id
     field :body, :string
     field :parent_ids, {:array, :integer}
+
+    belongs_to :author, SonderApi.Accounts.User
     belongs_to :post, SonderApi.Posts.Post
 
     timestamps()

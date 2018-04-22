@@ -10,9 +10,10 @@ defmodule SonderApi.Groups.UserGroup do
 
 
   schema "user_groups" do
-    field :user_id, :id
-    field :group_id, :id
     field :state, SonderApi.Groups.State
+
+    belongs_to :user, SonderApi.Accounts.User
+    belongs_to :group, SonderApi.Groups.Group
 
     timestamps()
   end

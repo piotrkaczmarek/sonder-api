@@ -22,6 +22,7 @@ defmodule SonderApi.Groups do
   def list_groups do
     Repo.all(Group)
     |> Repo.preload(:users)
+    |> Repo.preload(:owner)
   end
 
   @doc """

@@ -16,4 +16,5 @@ config :sonder_api, SonderApi.Repo,
   password: "postgres",
   database: "sonder_api_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  ownership_timeout: 999999

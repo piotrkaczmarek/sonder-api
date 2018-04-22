@@ -10,6 +10,9 @@ defmodule SonderApi.Accounts.User do
     field :facebook_id, :string
     field :first_name, :string
 
+    has_many :posts, SonderApi.Posts.Post, foreign_key: "author_id"
+    has_many :comments, SonderApi.Posts.Comment, foreign_key: "author_id"
+    has_many :owned_groups, SonderApi.Groups.Group, foreign_key: "owner_id"
     many_to_many :groups, SonderApi.Groups.Group, join_through: "user_groups"
     timestamps()
   end

@@ -4,82 +4,30 @@ defmodule SonderApiWeb.UserControllerTest do
   alias SonderApi.Accounts
   alias SonderApi.Accounts.User
 
-  @create_attrs %{email: "some email", auth_token: "some auth_token", facebook_id: "some facebook_id", first_name: "some first_name"}
-  @update_attrs %{email: "some updated email", auth_token: "some updated auth_token", facebook_id: "some updated facebook_id", first_name: "some updated first_name"}
-  @invalid_attrs %{email: nil, auth_token: nil, facebook_id: nil, first_name: nil}
+  describe "me when authorized" do
+    setup %{conn: conn}, do: create_user_and_authorize(conn)
 
-  def fixture(:user) do
-    {:ok, user} = Accounts.create_user(@create_attrs)
-    user
+    test "it returns current user data", %{conn: conn, user: current_user} do
+      conn = get conn, user_path(conn, :me)
+      assert json_response(conn, 200)["data"] ==
+        %{"first_name" => current_user.first_name, "id" => current_user.id}
+    end
   end
 
-  setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  describe "me when unauthorized" do
+    test "returns 401", %{conn: conn} do
+      conn = get conn, user_path(conn, :me)
+
+      assert json_response(conn, 401)["error"] == "Unauthorized"
+    end
   end
 
-  # describe "index" do
-  #   test "lists all users", %{conn: conn} do
-  #     conn = get conn, user_path(conn, :index)
-  #     assert json_response(conn, 200)["data"] == []
-  #   end
-  # end
-
-  # describe "create user" do
-  #   test "renders user when data is valid", %{conn: conn} do
-  #     conn = post conn, user_path(conn, :create), user: @create_attrs
-  #     assert %{"id" => id} = json_response(conn, 201)["data"]
-
-  #     conn = get conn, user_path(conn, :show, id)
-  #     assert json_response(conn, 200)["data"] == %{
-  #       "id" => id,
-  #       "email" => "some email",
-  #       "auth_token" => "some auth_token",
-  #       "facebook_id" => "some facebook_id",
-  #       "first_name" => "some first_name"}
-  #   end
-
-  #   test "renders errors when data is invalid", %{conn: conn} do
-  #     conn = post conn, user_path(conn, :create), user: @invalid_attrs
-  #     assert json_response(conn, 422)["errors"] != %{}
-  #   end
-  # end
-
-  # describe "update user" do
-  #   setup [:create_user]
-
-  #   test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
-  #     conn = put conn, user_path(conn, :update, user), user: @update_attrs
-  #     assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-  #     conn = get conn, user_path(conn, :show, id)
-  #     assert json_response(conn, 200)["data"] == %{
-  #       "id" => id,
-  #       "email" => "some updated email",
-  #       "auth_token" => "some updated auth_token",
-  #       "facebook_id" => "some updated facebook_id",
-  #       "first_name" => "some updated first_name"}
-  #   end
-
-  #   test "renders errors when data is invalid", %{conn: conn, user: user} do
-  #     conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
-  #     assert json_response(conn, 422)["errors"] != %{}
-  #   end
-  # end
-
-  # describe "delete user" do
-  #   setup [:create_user]
-
-  #   test "deletes chosen user", %{conn: conn, user: user} do
-  #     conn = delete conn, user_path(conn, :delete, user)
-  #     assert response(conn, 204)
-  #     assert_error_sent 404, fn ->
-  #       get conn, user_path(conn, :show, user)
-  #     end
-  #   end
-  # end
-
-  defp create_user(_) do
-    user = fixture(:user)
-    {:ok, user: user}
+  defp create_user_and_authorize(conn) do
+    user = insert(:user)
+    {:ok, encoded_token, claims} = SonderApi.Guardian.encode_and_sign(user)
+    conn = conn
+    |> put_req_header("authorization", encoded_token)
+    |> put_req_header("accept", "application/json")
+    { :ok, conn: conn, user: user }
   end
 end
