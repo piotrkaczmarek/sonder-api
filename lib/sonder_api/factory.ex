@@ -27,9 +27,9 @@ defmodule SonderApi.Factory do
   end
 
   def post_factory do
-    title = sequence(:title, &"Use ExMachina! (Part #{&1})")
     %SonderApi.Posts.Post{
-      body: title,
+      title: Faker.Lorem.Shakespeare.as_you_like_it,
+      body: Faker.Lorem.Shakespeare.as_you_like_it,
       author: build(:user),
       group: build(:group)
     }
@@ -37,7 +37,7 @@ defmodule SonderApi.Factory do
 
   def comment_factory do
     %SonderApi.Posts.Comment{
-      body: "It's great!",
+      body: Faker.Lorem.Shakespeare.as_you_like_it,
       parent_ids: [],
       author: build(:user),
       post: build(:post)

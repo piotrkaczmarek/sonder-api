@@ -18,36 +18,49 @@ alias SonderApi.Accounts.User
 alias SonderApi.Posts.Post
 alias SonderApi.Repo
 
+import SonderApi.Factory
+
 # fetch first existing user (before running the script create one with your facebook account)
 [main_user | tail] = Accounts.list_users
-user_1 = Repo.insert!(%User{first_name: "Bob",   facebook_id: "1"})
-user_2 = Repo.insert!(%User{first_name: "Susan", facebook_id: "2"})
-user_3 = Repo.insert!(%User{first_name: "Mark",  facebook_id: "3"})
-user_4 = Repo.insert!(%User{first_name: "Ann",   facebook_id: "4"})
-user_5 = Repo.insert!(%User{first_name: "Grace", facebook_id: "5"})
 
-group_1 = Repo.insert!(%Group{size: 3, name: "Wild Cats", owner_id: main_user.id})
-group_2 = Repo.insert!(%Group{size: 5, name: "Team ABC", owner_id: user_1.id})
-group_3 = Repo.insert!(%Group{size: 5, name: "AwesomePack", owner_id: user_1.id})
+user_1 = insert(:user, %{first_name: "Bob"})
+user_2 = insert(:user, %{first_name: "Susan"})
+user_3 = insert(:user, %{first_name: "Mark"})
+user_4 = insert(:user, %{first_name: "Ann"})
+user_5 = insert(:user, %{first_name: "Grace"})
 
-Repo.insert!(%Post{body: "Hello world.", group_id: group_1.id, author_id: user_1.id})
-Repo.insert!(%Post{body: "Brave new world", group_id: group_1.id, author_id: user_1.id})
-Repo.insert!(%Post{body: "Bye old world", group_id: group_1.id, author_id: user_2.id})
+group_1 = insert(:group, %{name: "Wild Cats", owner: main_user})
+group_2 = insert(:group, %{name: "Team ABC", owner: user_1})
+group_3 = insert(:group, %{name: "AwesomePack", owner: user_1})
 
-Repo.insert!(%UserGroup{user_id: main_user.id, group_id: group_1.id, state: "accepted"})
-Repo.insert!(%UserGroup{user_id: main_user.id, group_id: group_2.id, state: "suggested"})
-Repo.insert!(%UserGroup{user_id: main_user.id, group_id: group_3.id, state: "accepted"})
 
-Repo.insert!(%UserGroup{user_id: user_1.id, group_id: group_1.id, state: "applied"})
-Repo.insert!(%UserGroup{user_id: user_2.id, group_id: group_1.id, state: "applied"})
-Repo.insert!(%UserGroup{user_id: user_3.id, group_id: group_1.id, state: "applied"})
-Repo.insert!(%UserGroup{user_id: user_4.id, group_id: group_1.id, state: "accepted"})
-Repo.insert!(%UserGroup{user_id: user_5.id, group_id: group_1.id, state: "accepted"})
+insert(:user_group, %{user: main_user, group: group_1, state: "accepted"})
+insert(:user_group, %{user: main_user, group: group_2, state: "suggested"})
+insert(:user_group, %{user: main_user, group: group_3, state: "accepted"})
 
-Repo.insert!(%UserGroup{user_id: user_1.id, group_id: group_2.id, state: "accepted"})
-Repo.insert!(%UserGroup{user_id: user_2.id, group_id: group_2.id, state: "accepted"})
-Repo.insert!(%UserGroup{user_id: user_3.id, group_id: group_2.id, state: "applied"})
-Repo.insert!(%UserGroup{user_id: user_4.id, group_id: group_2.id, state: "applied"})
-Repo.insert!(%UserGroup{user_id: user_5.id, group_id: group_2.id, state: "applied"})
+insert(:user_group, %{user: user_1, group: group_1, state: "applied"})
+insert(:user_group, %{user: user_2, group: group_1, state: "applied"})
+insert(:user_group, %{user: user_3, group: group_1, state: "applied"})
+insert(:user_group, %{user: user_4, group: group_1, state: "accepted"})
+insert(:user_group, %{user: user_5, group: group_1, state: "accepted"})
 
-Repo.insert!(%UserGroup{user_id: user_1.id, group_id: group_3.id, state: "accepted"})
+insert(:user_group, %{user: user_1, group: group_2, state: "accepted"})
+insert(:user_group, %{user: user_2, group: group_2, state: "accepted"})
+insert(:user_group, %{user: user_3, group: group_2, state: "applied"})
+insert(:user_group, %{user: user_4, group: group_2, state: "applied"})
+insert(:user_group, %{user: user_5, group: group_2, state: "applied"})
+
+insert(:user_group, %{user: user_1, group: group_3, state: "accepted"})
+
+post_1 = insert(:post, %{group: group_1, author: user_1})
+post_2 = insert(:post, %{group: group_1, author: user_1})
+post_3 = insert(:post, %{group: group_1, author: user_2})
+
+comment_1 = insert(:comment, %{post: post_1, author: user_2, parent_ids: []})
+    comment_1_1 = insert(:comment, %{post: post_1, author: user_3, parent_ids: [comment_1.id]})
+    comment_1_2 = insert(:comment, %{post: post_1, author: user_4, parent_ids: [comment_1.id]})
+        comment_1_1_1 = insert(:comment, %{post: post_1, author: user_3, parent_ids: [comment_1.id, comment_1_1.id]})
+        comment_1_1_2 = insert(:comment, %{post: post_1, author: user_5, parent_ids: [comment_1.id, comment_1_1.id]})
+            comment_1_1_2_1 = insert(:comment, %{post: post_1, author: user_5, parent_ids: [comment_1.id, comment_1_1.id, comment_1_1_2.id]})
+comment_2 = insert(:comment, %{post: post_1, author: user_2, parent_ids: []})
+    comment_2_1 = insert(:comment, %{post: post_1, author: user_2, parent_ids: [comment_2.id]})

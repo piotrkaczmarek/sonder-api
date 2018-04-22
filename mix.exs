@@ -46,7 +46,8 @@ defmodule SonderApi.Mixfile do
       {:cors_plug, "~> 1.2"},
       {:exnumerator, "~> 1.6"},
       {:guardian, "~> 1.0"},
-      {:ex_machina, "~> 2.2"}
+      {:ex_machina, "~> 2.2"},
+      {:faker, "~> 0.10"}
     ]
   end
 
