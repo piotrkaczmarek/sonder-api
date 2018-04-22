@@ -56,10 +56,6 @@ defmodule SonderApi.GroupsTest do
   describe "user_groups" do
     alias SonderApi.Groups.UserGroup
 
-    @valid_attrs %{user_id: 1, group_id: 1}
-    @update_attrs %{}
-    @invalid_attrs %{user_id: nil}
-
     test "list_user_groups/0 returns all user_groups" do
       user = insert(:user)
       group = insert(:group)
@@ -72,7 +68,6 @@ defmodule SonderApi.GroupsTest do
     test "list_members/1 returns only accepted users" do
       user_1 = insert(:user)
       user_2 = insert(:user, %{email: "email2@example.com", facebook_id: "345"})
-      user_3 = insert(:user, %{email: "email3@example.com", facebook_id: "123"})
       group = insert(:group)
       insert(:user_group, %{user: user_1, group: group, state: "accepted"})
       insert(:user_group, %{user: user_2, group: group, state: "rejected"})
@@ -91,11 +86,11 @@ defmodule SonderApi.GroupsTest do
     test "create_user_group/1 with valid data creates a user_group" do
       user = insert(:user)
       group = insert(:group)
-      assert {:ok, %UserGroup{} = user_group} = Groups.create_user_group(%{user_id: user.id, group_id: group.id, state: "accepted"})
+      assert {:ok, %UserGroup{} = _user_group} = Groups.create_user_group(%{user_id: user.id, group_id: group.id, state: "accepted"})
     end
 
     test "create_user_group/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Groups.create_user_group(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Groups.create_user_group(%{user_id: nil})
     end
 
     test "update_user_group/2 with valid data updates the user_group" do
@@ -103,8 +98,8 @@ defmodule SonderApi.GroupsTest do
       group = insert(:group)
       user_group = insert(:user_group, %{user: user, group: group, state: "accepted"})
 
-      assert {:ok, user_group} = Groups.update_user_group(user_group, @update_attrs)
-      assert %UserGroup{} = user_group
+      assert {:ok, %UserGroup{} = user_group} = Groups.update_user_group(user_group, %{state: "rejected"})
+      assert "rejected" == user_group.state
     end
 
     test "update_user_group/2 with invalid data returns error changeset" do

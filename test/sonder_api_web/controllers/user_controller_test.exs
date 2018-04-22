@@ -1,9 +1,6 @@
 defmodule SonderApiWeb.UserControllerTest do
   use SonderApiWeb.ConnCase
 
-  alias SonderApi.Accounts
-  alias SonderApi.Accounts.User
-
   describe "me when authorized" do
     setup %{conn: conn}, do: create_user_and_authorize(conn)
 
@@ -24,7 +21,7 @@ defmodule SonderApiWeb.UserControllerTest do
 
   defp create_user_and_authorize(conn) do
     user = insert(:user)
-    {:ok, encoded_token, claims} = SonderApi.Guardian.encode_and_sign(user)
+    {:ok, encoded_token, _claims} = SonderApi.Guardian.encode_and_sign(user)
     conn = conn
     |> put_req_header("authorization", encoded_token)
     |> put_req_header("accept", "application/json")

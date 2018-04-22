@@ -2,12 +2,6 @@ defmodule SonderApiWeb.GroupControllerTest do
   use SonderApiWeb.ConnCase
 
   alias SonderApi.Groups
-  alias SonderApi.Groups.Group
-  alias SonderApi.Accounts
-
-  @create_attrs %{size: 42}
-  @update_attrs %{size: 43}
-  @invalid_attrs %{size: nil}
 
   describe "suggested when authorized" do
     setup %{conn: conn}, do: create_user_and_authorize(conn)
@@ -88,7 +82,7 @@ defmodule SonderApiWeb.GroupControllerTest do
 
     test "creates and returns group when data is valid", %{conn: conn} do
       conn = post conn, group_path(conn, :create), group: %{name: "Test Group"}
-      assert %{"id" => id, "name" => "Test Group"} = json_response(conn, 201)["data"]
+      assert %{"id" => _id, "name" => "Test Group"} = json_response(conn, 201)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -130,7 +124,7 @@ defmodule SonderApiWeb.GroupControllerTest do
 
   defp create_user_and_authorize(conn) do
     user = insert(:user)
-    {:ok, encoded_token, claims} = SonderApi.Guardian.encode_and_sign(user)
+    {:ok, encoded_token, _claims} = SonderApi.Guardian.encode_and_sign(user)
     conn = conn
     |> put_req_header("authorization", encoded_token)
     |> put_req_header("accept", "application/json")
