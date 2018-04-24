@@ -12,7 +12,7 @@ defmodule SonderApiWeb.UserView do
 
   def render("user.json", %{user: user}) do
     %{id: user.id,
-      first_name: user.first_name}
+      firstName: user.first_name}
   end
 
   def render("show_private.json", %{user: user}) do
@@ -25,8 +25,8 @@ defmodule SonderApiWeb.UserView do
 
   def render("user_private.json", %{user: user}) do
     %{id: user.id,
-      first_name: user.first_name,
+      firstName: user.first_name,
       email: user.email,
-      facebook_id: user.facebook_id}
+      facebookId: user.facebook_id}
   end
 end
