@@ -63,5 +63,6 @@ defmodule SonderApiWeb.Router do
     post "/groups/:group_id/posts", PostController, :create
 
     get "/posts/:post_id", PostController, :show
+    post "/posts/:post_id/comments", PostController, :create_comment
   end
 end

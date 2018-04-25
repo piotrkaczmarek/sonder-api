@@ -3,6 +3,7 @@ defmodule SonderApiWeb.PostController do
 
   alias SonderApi.Posts
   alias SonderApi.Posts.Post
+  alias SonderApi.Posts.Comment
 
   action_fallback SonderApiWeb.FallbackController
 
@@ -27,6 +28,16 @@ defmodule SonderApiWeb.PostController do
       conn
       |> put_status(:created)
       |> render("show.json", post: post)
+    end
+  end
+
+  def create_comment(conn, %{"post_id" => post_id, "comment" => comment_params}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         {:ok, %Comment{} = comment } <- Posts.create_comment(Map.merge(comment_params, %{"author_id" => current_user_id, "post_id" => post_id}))
+    do
+      conn
+      |> put_status(:created)
+      |> render("show_comment.json", comment: comment)
     end
   end
 end

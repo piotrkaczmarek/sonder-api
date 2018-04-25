@@ -12,6 +12,10 @@ defmodule SonderApiWeb.PostView do
     %{data: render_one(post, PostView, "post.json")}
   end
 
+  def render("show_comment.json", %{comment: comment}) do
+    %{data: render_one(comment, CommentView, "show.json")}
+  end
+
   def render("show_with_comments.json", %{post: post}) do
     %{data: render_one(post, PostView, "post_with_comments.json")}
   end

@@ -7,6 +7,7 @@ defmodule SonderApi.Posts do
   alias SonderApi.Repo
 
   alias SonderApi.Posts.Post
+  alias SonderApi.Posts.Comment
 
   @doc """
   Returns the list of posts.
@@ -78,6 +79,24 @@ defmodule SonderApi.Posts do
   def create_post(attrs \\ %{}) do
     %Post{}
     |> Post.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Creates a post.
+
+  ## Examples
+
+      iex> create_post(%{field: value})
+      {:ok, %Post{}}
+
+      iex> create_post(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_comment(attrs \\ %{}) do
+    %Comment{}
+    |> Comment.changeset(attrs)
     |> Repo.insert()
   end
 

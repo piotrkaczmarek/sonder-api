@@ -17,7 +17,7 @@ defmodule SonderApi.Posts.Comment do
   @doc false
   def changeset(%Comment{} = comment, attrs) do
     comment
-    |> cast(attrs, [:body, :post_id, :author_id])
-    |> validate_required([:body, :post_id, :author_id])
+    |> cast(attrs, [:body, :post_id, :author_id, :parent_ids])
+    |> validate_required([:body, :post_id, :author_id, :parent_ids])
   end
 end
