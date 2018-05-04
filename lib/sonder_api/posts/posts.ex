@@ -54,9 +54,21 @@ defmodule SonderApi.Posts do
   """
   def get_post!(id), do: Repo.get!(Post, id)
 
-  def get_post(%{owner_id: author_id}) do
-    Repo.one(from post in Post, where: post.author_id == ^author_id)
-  end
+  @doc """
+  Gets a single post.
+
+  Returns nil if the Post does not exist.
+
+  ## Examples
+
+      iex> get_post(123)
+      %Post{}
+
+      iex> get_post(456)
+      nil
+
+  """
+  def get_post(id), do: Repo.get(Post, id)
 
   def get_post_with_comments(%{post_id: post_id}) do
     Repo.one(from post in Post,
@@ -145,5 +157,141 @@ defmodule SonderApi.Posts do
   """
   def change_post(%Post{} = post) do
     Post.changeset(post, %{})
+  end
+
+  alias SonderApi.Posts.Vote
+
+  @doc """
+  Returns the list of votes.
+
+  ## Examples
+
+      iex> list_votes()
+      [%Vote{}, ...]
+
+  """
+  def list_votes do
+    Repo.all(Vote)
+  end
+
+  @doc """
+  Gets a single vote.
+
+  Raises `Ecto.NoResultsError` if the Vote does not exist.
+
+  ## Examples
+
+      iex> get_vote!(123)
+      %Vote{}
+
+      iex> get_vote!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_vote!(id), do: Repo.get!(Vote, id)
+
+  def get_vote(%{target_class: target_class, target_id: target_id}) do
+    Repo.one(from v in Vote, where: v.target_class == ^target_class and v.target_id == ^target_id)
+  end
+
+  @doc """
+  Gets a single vote.
+
+  Returns nil if the Vote does not exist.
+
+  ## Examples
+
+      iex> get_vote(123)
+      %Vote{}
+
+      iex> get_vote(456)
+      nil
+
+  """
+  def get_vote(id), do: Repo.get(Vote, id)
+
+
+  @doc """
+  Creates a vote.
+
+  ## Examples
+
+      iex> create_vote(%{field: value})
+      {:ok, %Vote{}}
+
+      iex> create_vote(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_vote(attrs \\ %{}) do
+    %Vote{}
+    |> Vote.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Creates or updates vote.
+
+  ## Examples
+
+      iex> upsert_vote(%{field: value})
+      {:ok, %Vote{}}
+
+      iex> upsert_vote(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def upsert_vote(attrs = %{target_class: target_class, target_id: target_id, points: points}) do
+    case get_vote(%{target_class: target_class, target_id: target_id}) do
+      %Vote{} = vote -> update_vote(vote, attrs)
+      nil -> create_vote(attrs)
+    end
+  end
+
+  @doc """
+  Updates a vote.
+
+  ## Examples
+
+      iex> update_vote(vote, %{field: new_value})
+      {:ok, %Vote{}}
+
+      iex> update_vote(vote, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_vote(%Vote{} = vote, attrs) do
+    vote
+    |> Vote.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Vote.
+
+  ## Examples
+
+      iex> delete_vote(vote)
+      {:ok, %Vote{}}
+
+      iex> delete_vote(vote)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_vote(%Vote{} = vote) do
+    Repo.delete(vote)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking vote changes.
+
+  ## Examples
+
+      iex> change_vote(vote)
+      %Ecto.Changeset{source: %Vote{}}
+
+  """
+  def change_vote(%Vote{} = vote) do
+    Vote.changeset(vote, %{})
   end
 end

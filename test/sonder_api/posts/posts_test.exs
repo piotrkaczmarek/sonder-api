@@ -12,4 +12,8 @@ defmodule SonderApi.PostsTest do
       assert([comment_1.id, comment_2.id] == Enum.map(post.comments, fn(x) -> x.id end))
     end
   end
+
+  describe "votes" do
+    alias SonderApi.Posts.Vote
+  end
 end

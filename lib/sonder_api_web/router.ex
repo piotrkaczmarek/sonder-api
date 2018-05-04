@@ -64,5 +64,9 @@ defmodule SonderApiWeb.Router do
 
     get "/posts/:post_id", PostController, :show
     post "/posts/:post_id/comments", PostController, :create_comment
+
+    post "/:target_class/:target_id/upvote", VoteController, :upvote
+    post "/:target_class/:target_id/downvote", VoteController, :downvote
+    delete "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
   end
 end
