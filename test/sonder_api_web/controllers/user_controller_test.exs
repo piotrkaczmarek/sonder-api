@@ -7,7 +7,7 @@ defmodule SonderApiWeb.UserControllerTest do
     test "it returns current user data", %{conn: conn, user: current_user} do
       conn = get conn, user_path(conn, :me)
       assert json_response(conn, 200)["data"] ==
-        %{"first_name" => current_user.first_name, "id" => current_user.id}
+        %{"firstName" => current_user.first_name, "id" => current_user.id}
     end
   end
 

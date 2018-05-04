@@ -28,11 +28,11 @@ defmodule SonderApiWeb.GroupControllerTest do
         %{"id" => group_1.id,
           "name" => group_1.name,
           "size" => group_1.size,
-          "members" => [%{"id" => user_1.id, "first_name" => user_1.first_name}, %{"id" => user_2.id, "first_name" => user_2.first_name}]},
+          "members" => [%{"id" => user_1.id, "firstName" => user_1.first_name}, %{"id" => user_2.id, "firstName" => user_2.first_name}]},
         %{"id" => group_2.id,
           "name" => group_2.name,
           "size" => group_2.size,
-          "members" => [%{"id" => user_1.id, "first_name" => user_1.first_name}]}
+          "members" => [%{"id" => user_1.id, "firstName" => user_1.first_name}]}
       ]
 
       assert json_response(conn, 200)["data"] == expected_response
