@@ -1,6 +1,11 @@
 defmodule SonderApiWeb.Router do
   use SonderApiWeb, :router
 
+  alias SonderApi.Groups
+  alias SonderApi.Groups.UserGroup
+  alias SonderApi.Posts
+  alias SonderApi.Posts.Post
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -21,6 +26,29 @@ defmodule SonderApiWeb.Router do
       assign(conn, :current_user, user)
     else
       _ -> handle_unauthorized(conn)
+    end
+  end
+
+  defp accepted_to_group(conn, _) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         group_id <- group_id_from_params(conn.params),
+         %UserGroup{} = user_group <- Groups.get_user_group(%{user_id: current_user_id, group_id: group_id}),
+         "accepted" <- user_group.state
+    do
+      conn
+    else
+      _ -> handle_unauthorized(conn)
+    end
+  end
+
+  defp group_id_from_params(%{"group_id" => group_id}) do
+    group_id
+  end
+
+  defp group_id_from_params(%{"post_id" => post_id}) do
+    with %Post{} = post <- Posts.get_post(post_id)
+    do
+      post.group_id
     end
   end
 
@@ -59,14 +87,18 @@ defmodule SonderApiWeb.Router do
     put "/groups/:group_id/applicants/:user_id/accept", GroupController, :accept
     put "/groups/:group_id/applicants/:user_id/reject", GroupController, :reject
 
+    post "/:target_class/:target_id/upvote", VoteController, :upvote
+    post "/:target_class/:target_id/downvote", VoteController, :downvote
+    delete "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
+  end
+
+  scope "/api", SonderApiWeb do
+    pipe_through [:api, :authenticate_user, :accepted_to_group]
+
     get "/groups/:group_id/posts", PostController, :index
     post "/groups/:group_id/posts", PostController, :create
 
     get "/posts/:post_id", PostController, :show
     post "/posts/:post_id/comments", PostController, :create_comment
-
-    post "/:target_class/:target_id/upvote", VoteController, :upvote
-    post "/:target_class/:target_id/downvote", VoteController, :downvote
-    delete "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
   end
 end
