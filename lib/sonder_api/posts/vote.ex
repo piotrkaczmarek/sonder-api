@@ -6,9 +6,10 @@ defmodule SonderApi.Posts.Vote do
 
   schema "votes" do
     field :points, :integer
-    field :target_class, :string
-    field :target_id, :integer
-    field :voter_id, :integer
+
+    belongs_to :post, SonderApi.Posts.Post
+    belongs_to :comment, SonderApi.Posts.Comment
+    belongs_to :voter, SonderApi.Accounts.User
 
     timestamps()
   end
@@ -16,7 +17,7 @@ defmodule SonderApi.Posts.Vote do
   @doc false
   def changeset(%Vote{} = vote, attrs) do
     vote
-    |> cast(attrs, [:points, :target_id, :target_class, :voter_id])
-    |> validate_required([:points, :target_id, :target_class, :voter_id])
+    |> cast(attrs, [:points, :post_id, :comment_id, :voter_id])
+    |> validate_required([:points, :post_id, :voter_id])
   end
 end

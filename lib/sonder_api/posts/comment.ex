@@ -10,6 +10,7 @@ defmodule SonderApi.Posts.Comment do
 
     belongs_to :author, SonderApi.Accounts.User
     belongs_to :post, SonderApi.Posts.Post
+    has_many :votes, SonderApi.Posts.Vote
 
     timestamps()
   end

@@ -13,6 +13,7 @@ defmodule SonderApi.Accounts.User do
     has_many :posts, SonderApi.Posts.Post, foreign_key: "author_id"
     has_many :comments, SonderApi.Posts.Comment, foreign_key: "author_id"
     has_many :owned_groups, SonderApi.Groups.Group, foreign_key: "owner_id"
+    has_many :votes, SonderApi.Posts.Vote, foreign_key: "voter_id"
     many_to_many :groups, SonderApi.Groups.Group, join_through: "user_groups"
     timestamps()
   end

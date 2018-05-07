@@ -19,6 +19,23 @@ defmodule SonderApiWeb.PostControllerTest do
       conn = get conn, post_path(conn, :index, group.id)
       assert json_response(conn, 401)
     end
+
+    test "returns posts with votes", %{conn: conn, user: current_user} do
+      group = insert(:group)
+      insert(:user_group, %{user: current_user, group: group, state: "accepted"})
+      post_1 = insert(:post, %{group: group})
+      post_2 = insert(:post, %{group: group})
+      post_3 = insert(:post, %{group: group})
+
+      insert(:vote, %{post: post_1, voter: current_user, comment: nil, points: 1})
+      insert(:vote, %{post: post_1, voter: current_user, points: -1})
+      insert(:vote, %{post: post_2, voter: current_user, comment: nil, points: -1})
+
+      conn = get conn, post_path(conn, :index, group.id)
+
+      returned_votes = Enum.reduce(json_response(conn,200)["data"], %{}, fn(x, acc) -> Map.put(acc, x["id"], x["voted"]) end)
+      assert returned_votes == %{post_1.id => 1, post_2.id => -1, post_3.id => 0}
+    end
   end
 
   describe "index/1 when not authorized" do

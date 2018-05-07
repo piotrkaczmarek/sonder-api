@@ -28,14 +28,16 @@ defmodule SonderApi.Posts do
 
   ## Examples
 
-      iex> get_group_posts(5)
+      iex> get_group_posts(5, 1)
       [%Post{}, ...]
 
   """
-  def get_group_posts(group_id) do
-    query = from post in Post,
-              where: post.group_id == ^group_id
-    Repo.all(query)
+  def get_group_posts(%{group_id: group_id, current_user_id: current_user_id}) do
+    Repo.all(from post in Post,
+             where: post.group_id == ^group_id,
+             left_join: v in assoc(post, :votes),
+             on: v.voter_id == ^current_user_id and is_nil(v.comment_id),
+             preload: [votes: v])
   end
 
   @doc """
@@ -72,8 +74,8 @@ defmodule SonderApi.Posts do
 
   def get_post_with_comments(%{post_id: post_id}) do
     Repo.one(from post in Post,
-             left_join: c in assoc(post, :comments),
              where: post.id == ^post_id,
+             left_join: c in assoc(post, :comments),
              preload: [comments: c])
   end
   @doc """
@@ -190,8 +192,12 @@ defmodule SonderApi.Posts do
   """
   def get_vote!(id), do: Repo.get!(Vote, id)
 
-  def get_vote(%{target_class: target_class, target_id: target_id}) do
-    Repo.one(from v in Vote, where: v.target_class == ^target_class and v.target_id == ^target_id)
+  def get_vote(%{post_id: post_id, comment_id: comment_id}) do
+    Repo.one(from v in Vote, where: v.post_id == ^post_id and v.comment_id == ^comment_id)
+  end
+
+  def get_vote(%{post_id: post_id}) do
+    Repo.one(from v in Vote, where: v.post_id == ^post_id)
   end
 
   @doc """
@@ -241,12 +247,20 @@ defmodule SonderApi.Posts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def upsert_vote(attrs = %{target_class: target_class, target_id: target_id, points: points}) do
-    case get_vote(%{target_class: target_class, target_id: target_id}) do
+  def upsert_vote(attrs = %{post_id: post_id, comment_id: comment_id, points: points}) do
+    case get_vote(%{post_id: post_id, comment_id: comment_id}) do
       %Vote{} = vote -> update_vote(vote, attrs)
       nil -> create_vote(attrs)
     end
   end
+
+  def upsert_vote(attrs = %{post_id: post_id, points: points}) do
+    case get_vote(%{post_id: post_id}) do
+      %Vote{} = vote -> update_vote(vote, attrs)
+      nil -> create_vote(attrs)
+    end
+  end
+
 
   @doc """
   Updates a vote.

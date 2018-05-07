@@ -11,6 +11,7 @@ defmodule SonderApi.Posts.Post do
     belongs_to :group, SonderApi.Groups.Group
     belongs_to :author, SonderApi.Accounts.User
     has_many :comments, SonderApi.Posts.Comment
+    has_many :votes, SonderApi.Posts.Vote
 
     timestamps()
   end

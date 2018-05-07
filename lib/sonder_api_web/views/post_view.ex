@@ -21,9 +21,14 @@ defmodule SonderApiWeb.PostView do
   end
 
   def render("post.json", %{post: post}) do
+    voted = case post.votes do
+      [%SonderApi.Posts.Vote{} = vote | _] -> vote.points
+      _ -> 0
+    end
     %{id: post.id,
       title: post.title,
-      body: post.body
+      body: post.body,
+      voted: voted
     }
   end
 

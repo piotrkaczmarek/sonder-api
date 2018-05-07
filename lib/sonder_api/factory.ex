@@ -43,4 +43,13 @@ defmodule SonderApi.Factory do
       post: build(:post)
     }
   end
+
+  def vote_factory do
+    %SonderApi.Posts.Vote{
+      points: 1,
+      post: build(:post),
+      comment: build(:comment),
+      voter: build(:user)
+    }
+  end
 end

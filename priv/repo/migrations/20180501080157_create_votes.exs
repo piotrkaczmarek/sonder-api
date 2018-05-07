@@ -4,8 +4,8 @@ defmodule SonderApi.Repo.Migrations.CreateVotes do
   def change do
     create table(:votes) do
       add :points, :integer
-      add :target_id, :integer
-      add :target_class, :string
+      add :post_id, :integer
+      add :comment_id, :integer
       add :voter_id, :integer
 
       timestamps()

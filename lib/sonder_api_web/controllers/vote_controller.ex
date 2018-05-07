@@ -9,9 +9,8 @@ defmodule SonderApiWeb.VoteController do
 
   def upvote(conn, %{"target_class" => "posts", "target_id" => post_id}) do
     with %Post{} = post <- Posts.get_post(post_id),
-         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{target_class: "posts",
-                                                      voter_id: conn.assigns[:current_user].id,
-                                                      target_id: post.id,
+         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{voter_id: conn.assigns[:current_user].id,
+                                                      post_id: post.id,
                                                       points: 1}) do
       conn
       |> put_status(:created)
@@ -21,9 +20,9 @@ defmodule SonderApiWeb.VoteController do
 
   def upvote(conn, %{"target_class" => "comments", "target_id" => comment_id}) do
     with %Post{} = comment <- Posts.get_comment(comment_id),
-         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{target_class: "comments",
-                                                      voter_id: conn.assigns[:current_user].id,
-                                                      target_id: comment.id,
+         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{voter_id: conn.assigns[:current_user].id,
+                                                      post_id: comment.post_id,
+                                                      comment_id: comment.id,
                                                       points: 1}) do
       conn
       |> put_status(:created)
@@ -33,9 +32,8 @@ defmodule SonderApiWeb.VoteController do
 
   def downvote(conn, %{"target_class" => "posts", "target_id" => post_id}) do
     with %Post{} = post <- Posts.get_post(post_id),
-         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{target_class: "posts",
-                                                      voter_id: conn.assigns[:current_user].id,
-                                                      target_id: post.id,
+         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{voter_id: conn.assigns[:current_user].id,
+                                                      post_id: post.id,
                                                       points: -1}) do
       conn
       |> put_status(:created)
@@ -45,9 +43,9 @@ defmodule SonderApiWeb.VoteController do
 
   def downvote(conn, %{"target_class" => "comments", "target_id" => comment_id}) do
     with %Post{} = comment <- Posts.get_comment(comment_id),
-         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{target_class: "comments",
-                                                      voter_id: conn.assigns[:current_user].id,
-                                                      target_id: comment.id,
+         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{voter_id: conn.assigns[:current_user].id,
+                                                      post_id: comment.post_id,
+                                                      comment_id: comment.id,
                                                       points: -1}) do
       conn
       |> put_status(:created)
