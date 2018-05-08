@@ -52,4 +52,15 @@ defmodule SonderApiWeb.VoteController do
       |> render("show.json", vote: vote)
     end
   end
+
+  def revoke_vote(conn, %{"target_class" => "posts", "target_id" => post_id}) do
+    with %Post{} = post <- Posts.get_post(post_id),
+         {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{voter_id: conn.assigns[:current_user].id,
+                                                      post_id: post.id,
+                                                      points: 0}) do
+      conn
+      |> put_status(:created)
+      |> render("show.json", vote: vote)
+    end
+  end
 end

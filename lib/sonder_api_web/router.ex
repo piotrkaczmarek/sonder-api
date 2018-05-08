@@ -89,7 +89,7 @@ defmodule SonderApiWeb.Router do
 
     post "/:target_class/:target_id/upvote", VoteController, :upvote
     post "/:target_class/:target_id/downvote", VoteController, :downvote
-    delete "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
+    post "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
   end
 
   scope "/api", SonderApiWeb do
