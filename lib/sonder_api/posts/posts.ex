@@ -115,6 +115,22 @@ defmodule SonderApi.Posts do
   end
 
   @doc """
+  Gets a single comment.
+
+  Returns nil if the Comment does not exist.
+
+  ## Examples
+
+      iex> get_comment(123)
+      %Comment{}
+
+      iex> get_comment(456)
+      nil
+
+  """
+  def get_comment(id), do: Repo.get(Comment, id)
+
+  @doc """
   Updates a post.
 
   ## Examples

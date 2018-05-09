@@ -33,10 +33,15 @@ defmodule SonderApiWeb.PostView do
   end
 
   def render("post_with_comments.json", %{post: post}) do
+    voted = case post.votes do
+      [%SonderApi.Posts.Vote{} = vote | _] -> vote.points
+      _ -> 0
+    end
     %{id: post.id,
       title: post.title,
       body: post.body,
       authorId: post.author_id,
+      voted: voted,
       comments: render_many(post.comments, CommentView, "show.json")
     }
   end
