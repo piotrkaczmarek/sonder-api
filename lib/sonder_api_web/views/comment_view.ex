@@ -19,6 +19,7 @@ defmodule SonderApiWeb.CommentView do
       body: comment.body,
       authorId: comment.author_id,
       parentIds: comment.parent_ids,
+      points: comment.points,
       voted: voted
     }
   end

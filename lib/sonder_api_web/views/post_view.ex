@@ -21,6 +21,7 @@ defmodule SonderApiWeb.PostView do
       title: post.title,
       body: post.body,
       authorId: post.author_id,
+      points: post.points,
       voted: voted
     }
   end

@@ -8,6 +8,7 @@ defmodule SonderApi.Posts do
 
   alias SonderApi.Posts.Post
   alias SonderApi.Posts.Comment
+  alias SonderApi.Posts.Vote
 
   @doc """
   Returns the list of posts.
@@ -146,7 +147,39 @@ defmodule SonderApi.Posts do
     Post.changeset(post, %{})
   end
 
-  alias SonderApi.Posts.Vote
+  @doc """
+  Calculates post's points and updates it.
+
+  ## Examples
+
+      iex> update_post_points(post)
+      {:ok, %Post{}}
+
+  """
+  def update_post_points(%Post{} = post) do
+    query = from vote in Vote,
+            where: vote.post_id == ^post.id and is_nil(vote.comment_id)
+    points = Repo.aggregate(query, :sum, :points)
+    update_post(post, %{points: points})
+  end
+
+
+  @doc """
+  Calculates comment's points and updates it.
+
+  ## Examples
+
+      iex> update_comment_points(post)
+      {:ok, %Post{}}
+
+  """
+  def update_comment_points(%Comment{} = comment) do
+    query = from vote in Vote,
+            where: vote.post_id == ^comment.post_id and vote.comment_id == ^comment.id
+    points = Repo.aggregate(query, :sum, :points)
+    update_comment(comment, %{points: points})
+  end
+
 
   @doc """
   Returns the list of votes.
@@ -177,12 +210,18 @@ defmodule SonderApi.Posts do
   """
   def get_vote!(id), do: Repo.get!(Vote, id)
 
-  def get_vote(%{post_id: post_id, comment_id: comment_id}) do
-    Repo.one(from vote in Vote, where: vote.post_id == ^post_id and vote.comment_id == ^comment_id)
+  def get_vote(%{post_id: post_id, comment_id: comment_id, voter_id: voter_id}) do
+    Repo.one(from vote in Vote,
+             where: vote.post_id == ^post_id and
+                    vote.comment_id == ^comment_id and
+                    vote.voter_id == ^voter_id)
   end
 
-  def get_vote(%{post_id: post_id}) do
-    Repo.one(from vote in Vote, where: vote.post_id == ^post_id and is_nil(vote.comment_id))
+  def get_vote(%{post_id: post_id, voter_id: voter_id}) do
+    Repo.one(from vote in Vote,
+             where: vote.post_id == ^post_id and
+                    is_nil(vote.comment_id) and
+                    vote.voter_id == ^voter_id)
   end
 
   @doc """
@@ -232,15 +271,15 @@ defmodule SonderApi.Posts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def upsert_vote(attrs = %{post_id: post_id, comment_id: comment_id, points: points}) do
-    case get_vote(%{post_id: post_id, comment_id: comment_id}) do
+  def upsert_vote(attrs = %{post_id: post_id, comment_id: comment_id, voter_id: voter_id, points: points}) do
+    case get_vote(%{post_id: post_id, comment_id: comment_id, voter_id: voter_id}) do
       %Vote{} = vote -> update_vote(vote, attrs)
       nil -> create_vote(attrs)
     end
   end
 
-  def upsert_vote(attrs = %{post_id: post_id, points: points}) do
-    case get_vote(%{post_id: post_id}) do
+  def upsert_vote(attrs = %{post_id: post_id, voter_id: voter_id, points: points}) do
+    case get_vote(%{post_id: post_id, voter_id: voter_id}) do
       %Vote{} = vote -> update_vote(vote, attrs)
       nil -> create_vote(attrs)
     end
