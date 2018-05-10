@@ -19,9 +19,9 @@ defmodule SonderApiWeb.PostController do
 
   def show(conn, %{"post_id" => post_id}) do
     with current_user_id <- conn.assigns[:current_user].id,
-         %Post{} = post <- Posts.get_post_with_comments(%{post_id: post_id})
+         %Post{} = post <- Posts.get_post(%{post_id: post_id, current_user_id: current_user_id})
     do
-      render(conn, "show_with_comments.json", post: post)
+      render(conn, "show.json", post: post)
     end
   end
 
@@ -32,17 +32,6 @@ defmodule SonderApiWeb.PostController do
       conn
       |> put_status(:created)
       |> render("show.json", post: post)
-    end
-  end
-
-  def create_comment(conn, %{"post_id" => post_id, "comment" => comment_params}) do
-    with current_user_id <- conn.assigns[:current_user].id,
-         %Post{} = post <- Posts.get_post(post_id),
-         {:ok, %Comment{} = comment } <- Posts.create_comment(Map.merge(comment_params, %{"author_id" => current_user_id, "post_id" => post.id}))
-    do
-      conn
-      |> put_status(:created)
-      |> render("show_comment.json", comment: comment)
     end
   end
 end
