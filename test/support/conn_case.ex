@@ -21,6 +21,7 @@ defmodule SonderApiWeb.ConnCase do
       use Phoenix.ConnTest
       import SonderApiWeb.Router.Helpers
       import SonderApi.Factory
+      import SonderApiWeb.ControllerHelpers
 
       # The default endpoint for testing
       @endpoint SonderApiWeb.Endpoint
