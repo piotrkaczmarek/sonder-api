@@ -59,6 +59,14 @@ defmodule SonderApi.Groups do
     |> Repo.preload(:users)
   end
 
+  def list_accepted_group_ids(user_id) do
+    query = from group in Group,
+              join: user_group in UserGroup, where: user_group.group_id == group.id,
+              where: user_group.user_id == ^user_id and user_group.state == "accepted",
+              select: group.id
+    Repo.all(query)
+  end
+
  @doc """
   Returns the list of people who applied to given group.
 

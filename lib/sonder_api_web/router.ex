@@ -90,6 +90,8 @@ defmodule SonderApiWeb.Router do
     post "/:target_class/:target_id/upvote", VoteController, :upvote
     post "/:target_class/:target_id/downvote", VoteController, :downvote
     post "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
+
+    get "/posts", PostController, :index
   end
 
   scope "/api", SonderApiWeb do
@@ -97,8 +99,8 @@ defmodule SonderApiWeb.Router do
 
     get "/groups/:group_id/posts", PostController, :index
     post "/groups/:group_id/posts", PostController, :create
-    get "/posts/:post_id", PostController, :show
 
+    get "/posts/:post_id", PostController, :show
     get "/posts/:post_id/comments", CommentController, :index
     post "/posts/:post_id/comments", CommentController, :create
   end

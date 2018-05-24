@@ -17,6 +17,15 @@ defmodule SonderApiWeb.PostController do
     end
   end
 
+  def index(conn, %{}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         group_ids <- Groups.list_accepted_group_ids(current_user_id),
+         posts <- Posts.get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id})
+    do
+      render(conn, "index.json", posts: posts)
+    end
+  end
+
   def show(conn, %{"post_id" => post_id}) do
     with current_user_id <- conn.assigns[:current_user].id,
          %Post{} = post <- Posts.get_post(%{post_id: post_id, current_user_id: current_user_id})
