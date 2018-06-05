@@ -42,11 +42,12 @@ defmodule SonderApi.Posts do
   end
 
   def get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id}) do
-    Repo.all(from post in Post,
+    query = from post in Post,
              where: post.group_id in ^group_ids,
              left_join: vote in assoc(post, :votes),
              on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
-             preload: [votes: vote])
+             preload: [votes: vote]
+    Repo.all(query)
   end
 
   @doc """
@@ -394,6 +395,22 @@ defmodule SonderApi.Posts do
              left_join: vote in assoc(comment, :votes),
              on: vote.voter_id == ^current_user_id and not is_nil(vote.comment_id),
              preload: [votes: vote])
+  end
+
+  def append_comment_counts(%{posts: posts}) do
+    post_ids = Enum.map(posts, fn(post) -> post.id end)
+    counts = Repo.all(from c in Comment,
+                      where: c.post_id in ^post_ids,
+                      group_by: c.post_id,
+                      select: {c.post_id, count(c.id)})
+    Enum.map(posts, fn(post) ->
+      comment_count = case List.keyfind(counts, post.id, 0) do
+        {_, count} -> count
+        nil -> 0
+      end
+      %{post: post,
+        comment_count: comment_count}
+    end)
   end
 
   @doc """

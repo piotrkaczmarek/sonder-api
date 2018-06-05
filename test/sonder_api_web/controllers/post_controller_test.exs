@@ -39,14 +39,14 @@ defmodule SonderApiWeb.PostControllerTest do
     test "returns empty array when there are no posts", %{conn: conn, user: current_user} do
       group = insert(:group)
       insert(:user_group, %{user: current_user, group: group, state: "accepted"})
-      conn = get conn, post_path(conn, :index, group.id)
+      conn = get conn, "/api/groups/#{group.id}/posts"
       assert json_response(conn, 200)["data"] == []
     end
 
     test "return unauthorized when user is not accepted to the group", %{conn: conn, user: current_user} do
       group = insert(:group)
       post = insert(:post, %{group: group})
-      conn = get conn, post_path(conn, :index, group.id)
+      conn = get conn, "/api/groups/#{group.id}/posts"
       assert json_response(conn, 401)
     end
 
@@ -61,17 +61,30 @@ defmodule SonderApiWeb.PostControllerTest do
       insert(:vote, %{post: post_1, voter: current_user, points: -1})
       insert(:vote, %{post: post_2, voter: current_user, comment: nil, points: -1})
 
-      conn = get conn, post_path(conn, :index, group.id)
+      conn = get conn, "/api/groups/#{group.id}/posts"
 
       returned_votes = Enum.reduce(json_response(conn,200)["data"], %{}, fn(x, acc) -> Map.put(acc, x["id"], x["voted"]) end)
       assert returned_votes == %{post_1.id => 1, post_2.id => -1, post_3.id => 0}
+    end
+
+    test "returns posts with comment count", %{conn: conn, user: current_user} do
+      group = insert(:group)
+      insert(:user_group, %{user: current_user, group: group, state: "accepted"})
+      post_1 = insert(:post, %{group: group})
+      post_2 = insert(:post, %{group: group})
+      insert(:comment, %{post: post_1})
+      insert(:comment, %{post: post_1})
+
+      conn = get conn, "/api/groups/#{group.id}/posts"
+
+      assert [2, 0] == Enum.map(json_response(conn,200)["data"], fn(x) -> x["comment_count"] end)
     end
   end
 
   describe "index/1 when not authorized" do
     test "returns 401" do
       group = insert(:group)
-      conn = get conn, post_path(conn, :index, group.id)
+      conn = get conn, "/api/groups/#{group.id}/posts"
       assert json_response(conn, 401)
     end
   end

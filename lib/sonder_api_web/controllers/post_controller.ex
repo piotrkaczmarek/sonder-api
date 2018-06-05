@@ -11,18 +11,20 @@ defmodule SonderApiWeb.PostController do
 
   def index(conn, %{"group_id" => group_id}) do
     with current_user_id <- conn.assigns[:current_user].id,
-         posts <- Posts.get_group_posts(%{group_id: group_id, current_user_id: current_user_id})
+         posts <- Posts.get_group_posts(%{group_id: group_id, current_user_id: current_user_id}),
+         posts_with_comment_counts <- Posts.append_comment_counts(%{posts: posts})
     do
-      render(conn, "index.json", posts: posts)
+      render(conn, "index_with_comment_counts.json", posts: posts_with_comment_counts)
     end
   end
 
   def index(conn, %{}) do
     with current_user_id <- conn.assigns[:current_user].id,
          group_ids <- Groups.list_accepted_group_ids(current_user_id),
-         posts <- Posts.get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id})
+         posts <- Posts.get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id}),
+         posts_with_comment_counts <- Posts.append_comment_counts(%{posts: posts})
     do
-      render(conn, "index.json", posts: posts)
+      render(conn, "index_with_comment_counts.json", posts: posts_with_comment_counts)
     end
   end
 

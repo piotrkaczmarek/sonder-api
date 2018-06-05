@@ -46,6 +46,21 @@ defmodule SonderApi.PostsTest do
     end
   end
 
+  describe "append_comment_counts/1" do
+    test "appends comment counts to posts" do
+      group = insert(:group)
+      post_1 = insert(:post, %{group: group})
+      post_2 = insert(:post, %{group: group})
+      comment_1 = insert(:comment, %{post: post_1})
+      comment_2 = insert(:comment, %{post: post_1})
+
+      posts_with_comment_counts = Posts.append_comment_counts(%{posts: [post_1, post_2]})
+
+      assert([2, 0] == Enum.map(posts_with_comment_counts, fn(x) -> x.comment_count end))
+      assert([post_1, post_2] == Enum.map(posts_with_comment_counts, fn(x) -> x.post end))
+    end
+  end
+
   describe "votes" do
     alias SonderApi.Posts.Vote
   end
