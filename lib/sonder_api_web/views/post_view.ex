@@ -20,7 +20,7 @@ defmodule SonderApiWeb.PostView do
     %{id: post.id,
       title: post.title,
       body: post.body,
-      authorId: post.author_id,
+      author: %{id: post.author.id, username: post.author.first_name},
       points: post.points,
       voted: voted
     }
