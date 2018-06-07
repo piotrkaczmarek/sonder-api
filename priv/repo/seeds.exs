@@ -20,8 +20,11 @@ alias SonderApi.Repo
 
 import SonderApi.Factory
 
-# fetch first existing user (before running the script create one with your facebook account)
-[main_user | tail] = Accounts.list_users
+# fetch first existing user or create one using config var
+main_user = case Accounts.list_users do
+    [%User{} = existing_user | tail] -> existing_user
+    [] -> insert(:user, %{first_name: "Piotr", facebook_id: Application.fetch_env!(:plug, :facebook_id)})
+end
 
 user_1 = insert(:user, %{first_name: "Bob"})
 user_2 = insert(:user, %{first_name: "Susan"})

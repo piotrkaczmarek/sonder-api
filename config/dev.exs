@@ -56,3 +56,5 @@ config :sonder_api, SonderApi.Repo,
   database: "sonder_api_dev",
   hostname: "localhost",
   pool_size: 10
+
+import_config "dev.secret.exs"
