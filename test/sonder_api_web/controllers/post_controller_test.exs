@@ -77,7 +77,7 @@ defmodule SonderApiWeb.PostControllerTest do
 
       conn = get conn, "/api/groups/#{group.id}/posts"
 
-      assert [2, 0] == Enum.map(json_response(conn,200)["data"], fn(x) -> x["comment_count"] end)
+      assert [2, 0] == Enum.map(json_response(conn,200)["data"], fn(x) -> x["commentCount"] end)
     end
   end
 

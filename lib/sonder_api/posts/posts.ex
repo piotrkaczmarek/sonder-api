@@ -405,17 +405,33 @@ defmodule SonderApi.Posts do
 
   def append_comment_counts(%{posts: posts}) do
     post_ids = Enum.map(posts, fn(post) -> post.id end)
-    counts = Repo.all(from c in Comment,
-                      where: c.post_id in ^post_ids,
-                      group_by: c.post_id,
-                      select: {c.post_id, count(c.id)})
+    counts = get_comment_counts(%{post_ids: post_ids})
     Enum.map(posts, fn(post) ->
-      comment_count = case List.keyfind(counts, post.id, 0) do
+      Map.merge(post, %{comment_count: counts[post.id]})
+    end)
+  end
+
+  def append_comment_count(%Post{} = post) do
+    Map.merge(post, %{comment_count: get_comment_count(%{post_id: post.id})})
+  end
+
+  def get_comment_count(%{post_id: post_id}) do
+    Repo.one(from c in Comment,
+             where: c.post_id == ^post_id,
+             select: count("*"))
+  end
+
+  def get_comment_counts(%{post_ids: post_ids}) do
+    counts = Repo.all(from c in Comment,
+             where: c.post_id in ^post_ids,
+             group_by: c.post_id,
+             select: {c.post_id, count(c.id)})
+    Enum.reduce(post_ids, %{}, fn(post_id, map) ->
+      comment_count = case List.keyfind(counts, post_id, 0) do
         {_, count} -> count
         nil -> 0
       end
-      %{post: post,
-        comment_count: comment_count}
+      Map.put(map, post_id, comment_count)
     end)
   end
 

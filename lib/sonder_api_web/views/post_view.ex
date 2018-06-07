@@ -22,15 +22,12 @@ defmodule SonderApiWeb.PostView do
       body: post.body,
       author: %{id: post.author.id, username: post.author.first_name},
       points: post.points,
-      voted: voted
+      voted: voted,
+      commentCount: post.comment_count
     }
   end
 
-  def render("index_with_comment_counts.json", %{posts: posts}) do
+  def render("index.json", %{posts: posts}) do
     %{data: render_many(posts, PostView, "post_with_comment_count.json")}
-  end
-
-  def render("post_with_comment_count.json", %{post: post}) do
-    Map.merge(render_one(post.post, PostView, "post.json"), %{commentCount: post.comment_count})
   end
 end
