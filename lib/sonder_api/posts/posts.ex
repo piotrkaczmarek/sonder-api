@@ -400,7 +400,9 @@ defmodule SonderApi.Posts do
              where: comment.post_id == ^post_id,
              left_join: vote in assoc(comment, :votes),
              on: vote.voter_id == ^current_user_id and not is_nil(vote.comment_id),
-             preload: [votes: vote])
+             left_join: author in assoc(comment, :author),
+             on: author.id == comment.author_id,
+             preload: [votes: vote, author: author])
   end
 
   def append_comment_counts(%{posts: posts}) do

@@ -18,7 +18,8 @@ defmodule SonderApiWeb.CommentController do
   def create(conn, %{"post_id" => post_id, "comment" => comment_params}) do
     with current_user_id <- conn.assigns[:current_user].id,
          %Post{} = post <- Posts.get_post(post_id),
-         {:ok, %Comment{} = comment } <- Posts.create_comment(Map.merge(comment_params, %{"author_id" => current_user_id, "post_id" => post.id}))
+         {:ok, %Comment{} = comment } <- Posts.create_comment(Map.merge(comment_params, %{"author_id" => current_user_id, "post_id" => post.id})),
+         comment <- Map.merge(comment, %{author: %{id: current_user_id, first_name: conn.assigns[:current_user].first_name}})
     do
       conn
       |> put_status(:created)
