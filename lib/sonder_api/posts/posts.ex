@@ -36,6 +36,7 @@ defmodule SonderApi.Posts do
   def get_group_posts(%{group_id: group_id, current_user_id: current_user_id}) do
     Repo.all(from post in Post,
              where: post.group_id == ^group_id,
+             order_by: [desc: post.points],
              left_join: vote in assoc(post, :votes),
              on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
              left_join: author in assoc(post, :author),
@@ -46,6 +47,7 @@ defmodule SonderApi.Posts do
   def get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id}) do
     query = from post in Post,
              where: post.group_id in ^group_ids,
+             order_by: [desc: post.points],
              left_join: vote in assoc(post, :votes),
              on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
              left_join: author in assoc(post, :author),
