@@ -23,7 +23,8 @@ defmodule SonderApiWeb.PostView do
       author: %{id: post.author.id, username: post.author.first_name},
       points: post.points,
       voted: voted,
-      commentCount: post.comment_count
+      commentCount: post.comment_count,
+      group: %{id: post.group.id, name: post.group.name}
     }
   end
 

@@ -41,7 +41,9 @@ defmodule SonderApi.Posts do
              on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
              left_join: author in assoc(post, :author),
              on: author.id == post.author_id,
-             preload: [votes: vote, author: author])
+             left_join: group in assoc(post, :group),
+             on: group.id == post.group_id,
+             preload: [votes: vote, author: author, group: group])
   end
 
   def get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id}) do
@@ -52,7 +54,9 @@ defmodule SonderApi.Posts do
              on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
              left_join: author in assoc(post, :author),
              on: author.id == post.author_id,
-             preload: [votes: vote, author: author]
+             left_join: group in assoc(post, :group),
+             on: group.id == post.group_id,
+             preload: [votes: vote, author: author, group: group]
     Repo.all(query)
   end
 
@@ -96,7 +100,9 @@ defmodule SonderApi.Posts do
              on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
              left_join: author in assoc(post, :author),
              on: author.id == post.author_id,
-             preload: [votes: vote, author: author])
+             left_join: group in assoc(post, :group),
+             on: group.id == post.group_id,
+             preload: [votes: vote, author: author, group: group])
   end
 
   @doc """
