@@ -52,4 +52,19 @@ defmodule SonderApiWeb.PostController do
       |> render("show.json", post: post)
     end
   end
+
+  def create(conn, %{"post" => post_params}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         {:ok, %Post{} = post} <- Posts.create_post(Map.merge(post_params, %{"author_id" => current_user_id})),
+         post <- Map.merge(post,%{
+           comment_count: 0,
+           author: %{id: current_user_id, first_name: conn.assigns[:current_user].first_name},
+           group: nil
+         })
+    do
+      conn
+      |> put_status(:created)
+      |> render("show.json", post: post)
+    end
+  end
 end

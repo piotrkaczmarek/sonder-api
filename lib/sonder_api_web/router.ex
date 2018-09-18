@@ -15,7 +15,7 @@ defmodule SonderApiWeb.Router do
   end
 
   pipeline :api do
-    plug CORSPlug, [origin: Enum.filter([System.get_env("UI_HOST"), "http://localhost:4200"], & !is_nil(&1))]
+    plug CORSPlug, [origin: Enum.filter([System.get_env("UI_HOST"), "http://localhost:4200",  "http://localhost:4201"], & !is_nil(&1))]
     plug :accepts, ["json"]
   end
 
@@ -92,6 +92,7 @@ defmodule SonderApiWeb.Router do
     post "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
 
     get "/posts", PostController, :index
+    post "/posts", PostController, :create
   end
 
   scope "/api", SonderApiWeb do

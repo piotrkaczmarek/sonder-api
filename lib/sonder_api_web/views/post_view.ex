@@ -17,15 +17,18 @@ defmodule SonderApiWeb.PostView do
       [%SonderApi.Posts.Vote{} = vote | _] -> vote.points
       _ -> 0
     end
-    %{id: post.id,
+    json = %{id: post.id,
       title: post.title,
       body: post.body,
       author: %{id: post.author.id, username: post.author.first_name},
       points: post.points,
       voted: voted,
-      commentCount: post.comment_count,
-      group: %{id: post.group.id, name: post.group.name}
+      commentCount: post.comment_count
     }
+    case post.group do
+      %{} -> Map.merge(json, %{group: %{id: post.group.id, name: post.group.name}})
+      nil -> json
+    end
   end
 
   def render("index.json", %{posts: posts}) do

@@ -21,6 +21,6 @@ defmodule SonderApi.Posts.Post do
   def changeset(%Post{} = post, attrs) do
     post
     |> cast(attrs, [:body, :title, :group_id, :author_id, :points])
-    |> validate_required([:title, :group_id, :author_id])
+    |> validate_required([:title, :author_id])
   end
 end
