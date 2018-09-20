@@ -217,6 +217,22 @@ defmodule SonderApi.Posts do
     Repo.all(Vote)
   end
 
+  def get_user_post_votes(%{voter_id: voter_id}) do
+    query = from vote in Vote,
+            where: vote.voter_id == ^voter_id and
+                   is_nil(vote.comment_id)
+    Repo.all(query)
+  end
+
+  def get_user_comment_votes(%{voter_id: voter_id, post_id: post_id}) do
+    query = from vote in Vote,
+            where: vote.voter_id == ^voter_id and
+                   vote.post_id == ^post_id and
+                   not is_nil(vote.comment_id)
+    Repo.all(query)
+  end
+
+
   @doc """
   Gets a single vote.
 

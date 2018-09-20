@@ -4,6 +4,37 @@ defmodule SonderApiWeb.VoteControllerTest do
   alias SonderApi.Posts
   alias SonderApi.Posts.Vote
 
+  describe "post_votes/1" do
+    setup %{conn: conn}, do: create_user_and_authorize(conn)
+
+    test "returns all user's post votes", %{conn: conn, user: current_user} do
+      post_1 = insert(:post)
+      insert(:vote, %{post: post_1, voter: current_user, comment: nil})
+      post_2 = insert(:post)
+      insert(:vote, %{post: post_2, voter: current_user, comment: nil})
+
+      conn = get conn, vote_path(conn, :post_votes)
+      post_ids = Enum.map(json_response(conn, 200)["data"], fn x -> [x["post_id"], x["comment_id"]] end)
+      assert post_ids == [[post_1.id, nil], [post_2.id, nil]]
+    end
+  end
+
+  describe "comment_votes/1" do
+    setup %{conn: conn}, do: create_user_and_authorize(conn)
+
+    test "returns all user's comment votes for given post", %{conn: conn, user: current_user} do
+      post_1 = insert(:post)
+      comment_1 = insert(:comment, %{post: post_1})
+      insert(:vote, %{post: post_1, voter: current_user, comment: comment_1})
+      comment_2 = insert(:comment, %{post: post_1})
+      insert(:vote, %{post: post_1, voter: current_user, comment: comment_2})
+
+      conn = get conn, vote_path(conn, :comment_votes, post_1.id)
+      post_ids = Enum.map(json_response(conn, 200)["data"], fn x -> [x["post_id"], x["comment_id"]] end)
+      assert post_ids == [[post_1.id, comment_1.id], [post_1.id, comment_2.id]]
+    end
+  end
+
   describe "upvote/2 post" do
     setup %{conn: conn}, do: create_user_and_authorize(conn)
 

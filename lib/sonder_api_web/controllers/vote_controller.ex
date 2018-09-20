@@ -8,6 +8,24 @@ defmodule SonderApiWeb.VoteController do
 
   action_fallback SonderApiWeb.FallbackController
 
+  def post_votes(conn, %{}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         votes <- Posts.get_user_post_votes(%{voter_id: current_user_id})
+    do
+      conn
+      |> render("index.json", votes: votes)
+    end
+  end
+
+  def comment_votes(conn, %{"post_id" => post_id}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         votes <- Posts.get_user_comment_votes(%{voter_id: current_user_id, post_id: post_id})
+    do
+      conn
+      |> render("index.json", votes: votes)
+    end
+  end
+
   def upvote(conn, %{"target_class" => "posts", "target_id" => post_id}) do
     with %Post{} = post <- Posts.get_post(post_id),
          {:ok, %Vote{} = vote} <- Posts.upsert_vote(%{voter_id: conn.assigns[:current_user].id,

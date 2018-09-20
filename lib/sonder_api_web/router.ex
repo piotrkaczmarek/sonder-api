@@ -87,6 +87,8 @@ defmodule SonderApiWeb.Router do
     put "/groups/:group_id/applicants/:user_id/accept", GroupController, :accept
     put "/groups/:group_id/applicants/:user_id/reject", GroupController, :reject
 
+    get "/votes/posts", VoteController, :post_votes
+    get "/votes/posts/:post_id/comments", VoteController, :comment_votes
     post "/:target_class/:target_id/upvote", VoteController, :upvote
     post "/:target_class/:target_id/downvote", VoteController, :downvote
     post "/:target_class/:target_id/revoke_vote", VoteController, :revoke_vote
