@@ -58,6 +58,7 @@ insert(:user_group, %{user: user_1, group: group_3, state: "accepted"})
 post_1 = insert(:post, %{group: group_1, author: user_1})
 post_2 = insert(:post, %{group: group_1, author: user_1})
 post_3 = insert(:post, %{group: group_1, author: user_2})
+insert_list(200, :post, %{group: group_1, author: user_2})
 
 comment_1 = insert(:comment, %{post: post_1, author: user_2, parent_ids: []})
     comment_1_1 = insert(:comment, %{post: post_1, author: user_3, parent_ids: [comment_1.id]})

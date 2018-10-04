@@ -8,6 +8,15 @@ defmodule SonderApiWeb.PostView do
     %{data: render_many(posts, PostView, "post.json")}
   end
 
+  def render("paginated_index.json", %{posts: posts, page: page}) do
+    %{data: render_many(posts, PostView, "post.json"),
+      page: page.page_number,
+      perPage: page.page_size,
+      totalEntries: page.total_entries,
+      totalPages: page.total_pages
+    }
+  end
+
   def render("show.json", %{post: post}) do
     %{data: render_one(post, PostView, "post.json")}
   end

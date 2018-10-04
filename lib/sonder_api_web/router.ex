@@ -95,6 +95,7 @@ defmodule SonderApiWeb.Router do
 
     get "/posts", PostController, :index
     post "/posts", PostController, :create
+    get "/posts/:post_id", PostController, :show
   end
 
   scope "/api", SonderApiWeb do
@@ -103,7 +104,6 @@ defmodule SonderApiWeb.Router do
     get "/groups/:group_id/posts", PostController, :index
     post "/groups/:group_id/posts", PostController, :create
 
-    get "/posts/:post_id", PostController, :show
     get "/posts/:post_id/comments", CommentController, :index
     post "/posts/:post_id/comments", CommentController, :create
   end

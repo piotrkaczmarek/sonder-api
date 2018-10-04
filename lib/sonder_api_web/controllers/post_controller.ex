@@ -18,10 +18,20 @@ defmodule SonderApiWeb.PostController do
     end
   end
 
+  def index(conn, %{"page" => page, "perPage" => per_page}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         group_ids <- Groups.list_accepted_group_ids(current_user_id),
+         page <- Posts.get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id, page: page, per_page: per_page}),
+         posts <- Posts.append_comment_counts(%{posts: page.entries})
+    do
+      render(conn, "paginated_index.json", posts: posts, page: page)
+    end
+  end
+
   def index(conn, %{}) do
     with current_user_id <- conn.assigns[:current_user].id,
          group_ids <- Groups.list_accepted_group_ids(current_user_id),
-         posts <- Posts.get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id}),
+         posts <- Posts.get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id, page: 1, per_page: 1000}),
          posts <- Posts.append_comment_counts(%{posts: posts})
     do
       render(conn, "index.json", posts: posts)

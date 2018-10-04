@@ -13,8 +13,8 @@ defmodule SonderApiWeb.VoteView do
   def render("vote.json", %{vote: vote}) do
     %{id: vote.id,
       points: vote.points,
-      post_id: vote.post_id,
-      comment_id: vote.comment_id,
-      voter_id: vote.voter_id}
+      postId: vote.post_id,
+      commentId: vote.comment_id,
+      voterId: vote.voter_id}
   end
 end

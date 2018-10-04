@@ -20,7 +20,7 @@ defmodule SonderApi.Mixfile do
   def application do
     [
       mod: {SonderApi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :scrivener_ecto]
     ]
   end
 
@@ -47,7 +47,8 @@ defmodule SonderApi.Mixfile do
       {:exnumerator, "~> 1.6"},
       {:guardian, "~> 1.0"},
       {:ex_machina, "~> 2.2"},
-      {:faker, "~> 0.10"}
+      {:faker, "~> 0.10"},
+      {:scrivener_ecto, "~> 1.0"}
     ]
   end
 
