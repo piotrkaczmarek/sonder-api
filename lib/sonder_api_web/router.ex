@@ -99,7 +99,8 @@ defmodule SonderApiWeb.Router do
   end
 
   scope "/api", SonderApiWeb do
-    pipe_through [:api, :authenticate_user, :accepted_to_group]
+    # pipe_through [:api, :authenticate_user, :accepted_to_group]
+    pipe_through [:api, :authenticate_user]
 
     get "/groups/:group_id/posts", PostController, :index
     post "/groups/:group_id/posts", PostController, :create

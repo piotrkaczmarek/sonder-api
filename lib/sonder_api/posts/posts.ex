@@ -33,30 +33,16 @@ defmodule SonderApi.Posts do
       [%Post{}, ...]
 
   """
-  def get_group_posts(%{group_id: group_id, current_user_id: current_user_id}) do
+  def get_group_posts(%{group_id: group_id}) do
     Repo.all(from post in Post,
              where: post.group_id == ^group_id,
-             order_by: [desc: post.points],
-             left_join: vote in assoc(post, :votes),
-             on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
-             left_join: author in assoc(post, :author),
-             on: author.id == post.author_id,
-             left_join: group in assoc(post, :group),
-             on: group.id == post.group_id,
-             preload: [votes: vote, author: author, group: group])
+             order_by: [desc: post.points])
   end
 
-  def get_group_posts(%{group_ids: group_ids, current_user_id: current_user_id, page: page, per_page: per_page}) do
+  def get_group_posts(%{group_ids: group_ids, page: page, per_page: per_page}) do
     query = from post in Post,
-            #  where: post.group_id in ^group_ids,
-             order_by: [desc: post.points],
-             left_join: vote in assoc(post, :votes),
-             on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
-             left_join: author in assoc(post, :author),
-             on: author.id == post.author_id,
-             left_join: group in assoc(post, :group),
-             on: group.id == post.group_id,
-             preload: [votes: vote, author: author, group: group]
+             where: post.group_id in ^group_ids,
+             order_by: [desc: post.points]
     Repo.paginate(query, page: page, page_size: per_page)
   end
 
@@ -93,16 +79,9 @@ defmodule SonderApi.Posts do
   def get_post(id) when is_integer(id), do: Repo.get(Post, id)
   def get_post(id) when is_bitstring(id), do: Repo.get(Post, id)
 
-  def get_post(%{post_id: post_id, current_user_id: current_user_id}) do
+  def get_post(%{post_id: post_id}) do
     Repo.one(from post in Post,
-             where: post.id == ^post_id,
-             left_join: vote in assoc(post, :votes),
-             on: vote.voter_id == ^current_user_id and is_nil(vote.comment_id),
-             left_join: author in assoc(post, :author),
-             on: author.id == post.author_id,
-             left_join: group in assoc(post, :group),
-             on: group.id == post.group_id,
-             preload: [votes: vote, author: author, group: group])
+             where: post.id == ^post_id)
   end
 
   @doc """
@@ -419,46 +398,15 @@ defmodule SonderApi.Posts do
   """
   def get_comment(id), do: Repo.get(Comment, id)
 
-  def get_comments(%{post_id: post_id, current_user_id: current_user_id}) do
+  def get_comments(%{post_id: post_id}) do
     Repo.all(from comment in Comment,
-             where: comment.post_id == ^post_id,
-             left_join: vote in assoc(comment, :votes),
-             on: vote.voter_id == ^current_user_id and not is_nil(vote.comment_id),
-             left_join: author in assoc(comment, :author),
-             on: author.id == comment.author_id,
-             preload: [votes: vote, author: author])
-  end
-
-  def append_comment_counts(%{posts: posts}) do
-    post_ids = Enum.map(posts, fn(post) -> post.id end)
-    counts = get_comment_counts(%{post_ids: post_ids})
-    Enum.map(posts, fn(post) ->
-      Map.merge(post, %{comment_count: counts[post.id]})
-    end)
-  end
-
-  def append_comment_count(%Post{} = post) do
-    Map.merge(post, %{comment_count: get_comment_count(%{post_id: post.id})})
+             where: comment.post_id == ^post_id)
   end
 
   def get_comment_count(%{post_id: post_id}) do
     Repo.one(from c in Comment,
              where: c.post_id == ^post_id,
              select: count("*"))
-  end
-
-  def get_comment_counts(%{post_ids: post_ids}) do
-    counts = Repo.all(from c in Comment,
-             where: c.post_id in ^post_ids,
-             group_by: c.post_id,
-             select: {c.post_id, count(c.id)})
-    Enum.reduce(post_ids, %{}, fn(post_id, map) ->
-      comment_count = case List.keyfind(counts, post_id, 0) do
-        {_, count} -> count
-        nil -> 0
-      end
-      Map.put(map, post_id, comment_count)
-    end)
   end
 
   @doc """

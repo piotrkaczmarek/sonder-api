@@ -11,16 +11,12 @@ defmodule SonderApiWeb.CommentView do
   end
 
   def render("comment.json", %{comment: comment}) do
-    voted = case comment.votes do
-      [%SonderApi.Posts.Vote{} = vote | _] -> vote.points
-      _ -> 0
-    end
     %{id: comment.id,
+      postId: comment.post_id,
       body: comment.body,
-      author: %{id: comment.author.id, username: comment.author.first_name},
+      authorId: comment.author_id,
       parentIds: comment.parent_ids,
-      points: comment.points,
-      voted: voted
+      points: comment.points
     }
   end
 end

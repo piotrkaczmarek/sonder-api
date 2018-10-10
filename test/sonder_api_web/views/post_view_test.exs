@@ -8,7 +8,6 @@ defmodule SonderApiWeb.PostViewTest do
   describe "post.json when post has a group" do
     test "renders with group" do
       post = insert(:post)
-      |> Posts.append_comment_count
       rendered = render(SonderApiWeb.PostView, "post.json", %{ post: post })
       assert rendered.group.id == post.group.id
     end
@@ -17,7 +16,6 @@ defmodule SonderApiWeb.PostViewTest do
   describe "post.json when post does not have a group" do
     test "renders without group" do
       post = insert(:post, %{group: nil})
-      |> Posts.append_comment_count
       rendered = render(SonderApiWeb.PostView, "post.json", %{ post: post })
       assert Map.has_key?(rendered, :group) == false
     end

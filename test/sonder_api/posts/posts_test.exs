@@ -46,32 +46,6 @@ defmodule SonderApi.PostsTest do
     end
   end
 
-  describe "append_comment_counts/1" do
-    test "appends comment counts to posts" do
-      group = insert(:group)
-      post_1 = insert(:post, %{group: group})
-      post_2 = insert(:post, %{group: group})
-      comment_1 = insert(:comment, %{post: post_1})
-      comment_2 = insert(:comment, %{post: post_1})
-
-      posts_with_comment_counts = Posts.append_comment_counts(%{posts: [post_1, post_2]})
-
-      expected_posts = [Map.merge(post_1, %{comment_count: 2}), Map.merge(post_2, %{comment_count: 0})]
-      assert(expected_posts == Enum.map(posts_with_comment_counts, fn(x) -> x end))
-    end
-  end
-
-  describe "append_comment_count/1" do
-    test "appends comment count to post" do
-      group = insert(:group)
-      post_1 = insert(:post, %{group: group})
-      comment_1 = insert(:comment, %{post: post_1})
-      comment_2 = insert(:comment, %{post: post_1})
-
-      assert(Map.merge(post_1, %{comment_count: 2}) == Posts.append_comment_count(post_1))
-    end
-  end
-
   describe "get_comment_count/1" do
     test "returns count for a single post" do
       group = insert(:group)
