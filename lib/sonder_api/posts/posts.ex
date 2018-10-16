@@ -9,6 +9,9 @@ defmodule SonderApi.Posts do
   alias SonderApi.Posts.Post
   alias SonderApi.Posts.Comment
   alias SonderApi.Posts.Vote
+  alias SonderApi.Posts.Tag
+  alias SonderApi.Posts.PostTag
+  alias SonderApi.Posts.Tags
 
   @doc """
   Returns the list of posts.
@@ -21,7 +24,6 @@ defmodule SonderApi.Posts do
   """
   def list_posts do
     Repo.all(Post)
-    |> Repo.preload(:users)
   end
 
  @doc """
@@ -41,7 +43,7 @@ defmodule SonderApi.Posts do
 
   def get_group_posts(%{group_ids: group_ids, page: page, per_page: per_page}) do
     query = from post in Post,
-             where: post.group_id in ^group_ids,
+            #  where: post.group_id in ^group_ids,
              order_by: [desc: post.points]
     Repo.paginate(query, page: page, page_size: per_page)
   end
@@ -100,6 +102,15 @@ defmodule SonderApi.Posts do
     %Post{}
     |> Post.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_post_with_tags(%{post: post_attrs, tags: tags}) do
+    with {:ok, %Post{} = post} <- create_post(post_attrs),
+         tags <- Tags.find_or_create_tags(tags),
+         _ <- Tags.create_post_tags(post, tags)
+    do
+      {:ok, post}
+    end
   end
 
   @doc """

@@ -52,4 +52,10 @@ defmodule SonderApi.Factory do
       voter: build(:user)
     }
   end
+
+  def tag_factory do
+    %SonderApi.Posts.Tag{
+      name: Faker.Lorem.word
+    }
+  end
 end

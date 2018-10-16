@@ -14,7 +14,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       insert(:vote, %{post: post_2, voter: current_user, comment: nil})
 
       conn = get conn, vote_path(conn, :post_votes)
-      post_ids = Enum.map(json_response(conn, 200)["data"], fn x -> [x["post_id"], x["comment_id"]] end)
+      post_ids = Enum.map(json_response(conn, 200)["data"], fn x -> [x["postId"], x["commentId"]] end)
       assert post_ids == [[post_1.id, nil], [post_2.id, nil]]
     end
   end
@@ -30,7 +30,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       insert(:vote, %{post: post_1, voter: current_user, comment: comment_2})
 
       conn = get conn, vote_path(conn, :comment_votes, post_1.id)
-      post_ids = Enum.map(json_response(conn, 200)["data"], fn x -> [x["post_id"], x["comment_id"]] end)
+      post_ids = Enum.map(json_response(conn, 200)["data"], fn x -> [x["postId"], x["commentId"]] end)
       assert post_ids == [[post_1.id, comment_1.id], [post_1.id, comment_2.id]]
     end
   end
@@ -44,7 +44,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       post = insert(:post, %{group: group})
       insert_list(3, :vote, %{post: post, points: 1, comment: nil})
       conn = post conn, vote_path(conn, :upvote, "posts", post.id)
-      %{"post_id" => post_id } = json_response(conn, 201)["data"]
+      %{"postId" => post_id } = json_response(conn, 201)["data"]
       assert Posts.get_post(post_id).points == 4
     end
   end
@@ -60,7 +60,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       insert_list(3, :vote, %{post: post, points: 1, comment: comment})
 
       conn = post conn, vote_path(conn, :upvote, "comments", comment.id)
-      %{"comment_id" => comment_id } = json_response(conn, 201)["data"]
+      %{"commentId" => comment_id } = json_response(conn, 201)["data"]
       assert Posts.get_comment(comment_id).points == 4
     end
   end
@@ -75,7 +75,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       insert_list(3, :vote, %{post: post, points: 1, comment: nil})
 
       conn = post conn, vote_path(conn, :downvote, "posts", post.id)
-      %{"post_id" => post_id } = json_response(conn, 201)["data"]
+      %{"postId" => post_id } = json_response(conn, 201)["data"]
       assert Posts.get_post(post_id).points == 2
     end
   end
@@ -91,7 +91,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       insert_list(3, :vote, %{post: post, points: 1, comment: comment})
 
       conn = post conn, vote_path(conn, :downvote, "comments", comment.id)
-      %{"comment_id" => comment_id } = json_response(conn, 201)["data"]
+      %{"commentId" => comment_id } = json_response(conn, 201)["data"]
       assert Posts.get_comment(comment_id).points == 2
     end
   end
@@ -107,7 +107,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       insert_list(3, :vote, %{post: post, points: 1, comment: nil})
 
       conn = post conn, vote_path(conn, :revoke_vote, "posts", post.id)
-      %{"post_id" => post_id } = json_response(conn, 201)["data"]
+      %{"postId" => post_id } = json_response(conn, 201)["data"]
       assert Posts.get_post(post_id).points == 3
     end
   end
@@ -124,7 +124,7 @@ defmodule SonderApiWeb.VoteControllerTest do
       insert_list(3, :vote, %{post: post, points: 1, comment: comment})
 
       conn = post conn, vote_path(conn, :revoke_vote, "comments", comment.id)
-      %{"comment_id" => comment_id } = json_response(conn, 201)["data"]
+      %{"commentId" => comment_id } = json_response(conn, 201)["data"]
       assert Posts.get_comment(comment_id).points == 3
     end
   end

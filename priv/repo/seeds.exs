@@ -68,3 +68,5 @@ comment_1 = insert(:comment, %{post: post_1, author: user_2, parent_ids: []})
             comment_1_1_2_1 = insert(:comment, %{post: post_1, author: user_5, parent_ids: [comment_1.id, comment_1_1.id, comment_1_1_2.id]})
 comment_2 = insert(:comment, %{post: post_1, author: user_2, parent_ids: []})
     comment_2_1 = insert(:comment, %{post: post_1, author: user_2, parent_ids: [comment_2.id]})
+
+insert_list(3, :tag)

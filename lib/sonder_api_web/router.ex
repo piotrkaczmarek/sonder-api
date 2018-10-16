@@ -96,6 +96,8 @@ defmodule SonderApiWeb.Router do
     get "/posts", PostController, :index
     post "/posts", PostController, :create
     get "/posts/:post_id", PostController, :show
+
+    get "/tags", TagController, :index
   end
 
   scope "/api", SonderApiWeb do

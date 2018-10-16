@@ -34,9 +34,10 @@ defmodule SonderApiWeb.PostController do
     end
   end
 
-  def create(conn, %{"post" => post_params}) do
+  def create(conn, %{"post" => post_params, "tags" => tags}) do
     with current_user_id <- conn.assigns[:current_user].id,
-         {:ok, %Post{} = post} <- Posts.create_post(Map.merge(post_params, %{"author_id" => current_user_id}))
+         post_attrs <- Map.merge(post_params, %{"author_id" => current_user_id}),
+         {:ok, %Post{} = post} <- Posts.create_post_with_tags(%{post: post_attrs, tags: tags})
     do
       conn
       |> put_status(:created)
