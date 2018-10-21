@@ -17,7 +17,7 @@ defmodule SonderApiWeb.PostController do
     end
   end
 
-  def index(conn, %{"page" => page, "perPage" => per_page}) do
+  def index(conn, %{"page" => page, "perPage" => per_page, "tags" => tags}) do
     with current_user_id <- conn.assigns[:current_user].id,
          group_ids <- Groups.list_accepted_group_ids(current_user_id),
          page <- Posts.get_group_posts(%{group_ids: group_ids, page: page, per_page: per_page})
