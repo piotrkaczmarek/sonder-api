@@ -18,10 +18,18 @@ defmodule SonderApiWeb.PostController do
   end
 
   def index(conn, %{"page" => page, "perPage" => per_page, "tags" => tags}) do
-    with {:ok, tags} <- Poison.decode(tags),
-         current_user_id <- conn.assigns[:current_user].id,
+    with current_user_id <- conn.assigns[:current_user].id,
          group_ids <- Groups.list_accepted_group_ids(current_user_id),
-         page <- Posts.get_group_posts(%{group_ids: group_ids, tags: tags, page: page, per_page: per_page})
+         page <- Posts.get_group_tag_posts(%{group_ids: group_ids, tags: tags, page: page, per_page: per_page})
+    do
+      render(conn, "paginated_index.json", posts: page.entries, page: page)
+    end
+  end
+
+  def index(conn, %{"page" => page, "perPage" => per_page}) do
+    with current_user_id <- conn.assigns[:current_user].id,
+         group_ids <- Groups.list_accepted_group_ids(current_user_id),
+         page <- Posts.get_group_posts(%{group_ids: group_ids, page: page, per_page: per_page})
     do
       render(conn, "paginated_index.json", posts: page.entries, page: page)
     end

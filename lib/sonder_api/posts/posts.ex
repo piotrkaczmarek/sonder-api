@@ -44,7 +44,15 @@ defmodule SonderApi.Posts do
   def get_group_posts(%{group_ids: group_ids, page: page, per_page: per_page}) do
     query = from post in Post,
             #  where: post.group_id in ^group_ids,
-             order_by: [desc: post.points]
+            order_by: [desc: post.points]
+    Repo.paginate(query, page: page, page_size: per_page)
+  end
+
+  def get_group_tag_posts(%{group_ids: group_ids, tags: tags, page: page, per_page: per_page}) do
+    query = from post in Post,
+            #  where: post.group_id in ^group_ids,
+            join: post_tag in PostTag, where: post_tag.tag_id in ^tags and post_tag.post_id == post.id,
+            order_by: [desc: post.points]
     Repo.paginate(query, page: page, page_size: per_page)
   end
 
